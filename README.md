@@ -2,7 +2,7 @@
 
 *Dina-Leigh Simons*
 
-This GitHub repository contains R scripts and data for formatting and performing quality control checks on an intertidal eDNA metabarcoding dataset (CO1 and 18S). This pipeline aims to bridge outputs from the bioinformatics processing (in this case, DADA2) to ecological community analyses. This repository reproduces part of the analysis pipeline for the following publications:
+This GitHub repository contains R scripts and data for data formatting and performing quality control checks on an intertidal eDNA metabarcoding dataset (CO1 and 18S). This pipeline aims to bridge outputs from the bioinformatics processing (in this case, DADA2) to ecological community analyses. This repository reproduces part of the analysis pipeline for the following publications:
 - Simons et al (2025), Characterising rocky intertidal biodiversity using environmental DNA metabarcoding from local to national scales.
 
 ## Sources of data used here
