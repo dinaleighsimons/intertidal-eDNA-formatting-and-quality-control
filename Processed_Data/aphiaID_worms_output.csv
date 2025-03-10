@@ -1,0 +1,2200 @@
+"","sciname","aphiaID"
+"1","amoebozoa",391848
+"2","discosea",582189
+"3","flabellinia",582205
+"4","neoparamoeba",120567
+"5","vannella",120566
+"6","protostelium nocturnum",NA
+"7","elardia",NA
+"8","arcellinida",1317
+"9","cryptodifflugia operculata",NA
+"10","pyxidicula operculata",NA
+"11","euamoebida",451642
+"12","leptomyxida",1407
+"13","flabellulidae",1328
+"14","flabellula",120544
+"15","paraflabellula reniformis",120600
+"16","rhizamoeba",120548
+"17","rhizamoeba saxonica",120614
+"18","ancyromonas atlantica",1738155
+"19","ancyromonas indica",1738156
+"20","ancyromonas sigmoides",118040
+"21","apusomonadidae",103424
+"22","amastigomonas",103425
+"23","chelonemonas",NA
+"24","multimonas",NA
+"25","multimonas koreensis",NA
+"26","breviatea",582187
+"27","mantamonas",1486567
+"28","mantamonas plastica",1737642
+"29","cryptomonadales",17640
+"30","cryptomonas",106282
+"31","cryptomonas marssonii",248112
+"32","hemiselmis",106287
+"33","hemiselmis brunnescens",NA
+"34","hemiselmis cryptochromatica",623450
+"35","hemiselmis rufescens",573878
+"36","goniomonas",106286
+"37","goniomonas aff",NA
+"38","goniomonas avonlea",1371601
+"39","hemiarma marina",1361130
+"40","katablepharis",601744
+"41","leucocryptos",17651
+"42","jakobida",582219
+"43","andalucia",1738566
+"44","palpitomonas",1486515
+"45","picozoa",730531
+"46","picomonadida",730533
+"47","picomonas",730535
+"48","telonema",118028
+"49","telonema antarcticum",118074
+"50","telonema subtile",118075
+"51","pterocystis",1748110
+"52","choanocystis",428538
+"53","pavlova",249731
+"54","rebecca salina",573916
+"55","coccolithales",493821
+"56","tergestiella adriatica",840383
+"57","umbilicosphaera sibogae",235985
+"58","hymenomonas globosa",555940
+"59","pleurochrysis",NA
+"60","emiliania huxleyi",674716
+"61","phaeocystis",115088
+"62","phaeocystis globosa",160538
+"63","prymnesiales",115061
+"64","chrysocampanula spinifera",NA
+"65","chrysochromulina",115090
+"66","chrysochromulina leadbeateri",246591
+"67","prymnesiaceae",115073
+"68","haptolina brevifila",624975
+"69","haptolina hirta",699623
+"70","prymnesium",160563
+"71","prymnesium aff",NA
+"72","prymnesium parvum",160564
+"73","prymnesium pigrum",624973
+"74","trimastix",118033
+"75","opisthokonta",NA
+"76","aphelidea",NA
+"77","aphelidium",NA
+"78","choanoflagellata",NA
+"79","acanthoecidae",105498
+"80","pleurasiga minima",105598
+"81","pleurasiga reynoldsii",105601
+"82","stephanoecidae",707553
+"83","diaphanoeca",105513
+"84","diaphanoeca grandis",105571
+"85","diaphanoeca undulata",NA
+"86","craspedida",581514
+"87","salpingoecidae",105500
+"88","hartaetosiga",NA
+"89","lagenoeca",474842
+"90","monosiga",105535
+"91","salpingoeca tuba",105682
+"92","salpingoeca urceolata",105684
+"93","sphaeroeca leprechaunica",NA
+"94","fungi",4
+"95","dikarya",NA
+"96","saccharomyceta",147581
+"97","leotiomyceta",NA
+"98","dothideomycetes",147577
+"99","mycosphaerellales",NA
+"100","ophiosphaerella",NA
+"101","pleosporaceae",100044
+"102","preussia",100126
+"103","exophiala",1415558
+"104","pyrgillus javanicus",NA
+"105","verrucariaceae",147642
+"106","hydropunctaria rheitrophila",NA
+"107","wahlenbergiella striatula",NA
+"108","aspergillaceae",1457161
+"109","aspergillus penicillioides",NA
+"110","lecanoromycetes",147704
+"111","lecanora",147715
+"112","lecanora intumescens",NA
+"113","peltula obscurans",NA
+"114","blumeria hordei",NA
+"115","helotiales",177198
+"116","plectosphaerellaceae",437935
+"117","hypocreales incertae",NA
+"118","sarocladium bacillisporum",NA
+"119","microascales",100013
+"120","lulwoana uniseptata",437724
+"121","sordariomycetidae",172221
+"122","debaryomycetaceae",1415535
+"123","aciculoconidium aculeatum",NA
+"124","yarrowia",1457192
+"125","metschnikowia",100182
+"126","metschnikowia bicuspidata",100447
+"127","barnettozyma pratensis",NA
+"128","pichia",147588
+"129","saccharomycetaceae",147581
+"130","hanseniaspora uvarum",NA
+"131","taphrinales",988623
+"132","taphrina",988625
+"133","basidiomycota",21890
+"134","agaricomycotina",437290
+"135","agaricomycetes",426217
+"136","agaricomycetes incertae",NA
+"137","hyphodontia rimosissima",NA
+"138","polyporales",177229
+"139","russulales",437457
+"140","dacrymyces",1485672
+"141","tremellomycetes",437249
+"142","cystofilobasidium capitatum",437666
+"143","mrakiaceae",988566
+"144","naganishia globosa",NA
+"145","holtermanniella",NA
+"146","tremellales",437926
+"147","vishniacozyma victoriae",NA
+"148","cryptococcus gattii",NA
+"149","rhynchogastremataceae",NA
+"150","bensingtonia ciliata",NA
+"151","kondoa",995244
+"152","microbotryomycetes",438945
+"153","sporidiobolaceae",438946
+"154","pucciniales",988595
+"155","melampsora euphorbiae",NA
+"156","ustilaginomycotina",437295
+"157","exobasidiomycetes",NA
+"158","dicellomyces",NA
+"159","malassezia",NA
+"160","malassezia sympodialis",NA
+"161","fungi incertae",NA
+"162","chytridiomycetes",172237
+"163","chytridiaceae",164147
+"164","chytridium polysiphoniae",164150
+"165","lobulomycetaceae",NA
+"166","clydaea vesicula",NA
+"167","rhizophydiales",437911
+"168","kappamycetaceae",NA
+"169","rhizophydiaceae",437912
+"170","rhizophydium",162973
+"171","cryptomycota",NA
+"172","paramicrosporidium",NA
+"173","rozella",707611
+"174","endogonales",NA
+"175","endogone",NA
+"176","halteromyces radiatus",NA
+"177","mucoraceae",100079
+"178","entomophthora planchoniana",NA
+"179","furia ithacensis",NA
+"180","zoopagales",988534
+"181","ichthyosporea",391862
+"182","abeoforma whisleri",NA
+"183","paramoebidium",NA
+"184","creolimax fragrantissima",NA
+"185","astreptonema gammari",NA
+"186","pirum gemmata",NA
+"187","metazoa",NA
+"188","eumetazoa",NA
+"189","bilateria",NA
+"190","euteleostomi",NA
+"191","anguilliformes",10295
+"192","platichthys stellatus",154781
+"193","perca fluviatilis",151353
+"194","ovalentaria",NA
+"195","atheriniformes",10318
+"196","tripterygion delaisi",127090
+"197","gadus morhua",126436
+"198","clupea harengus",126417
+"199","siluroidei",NA
+"200","amniota",NA
+"201","homo sapiens",1455977
+"202","oikopleuridae",103356
+"203","clavelina meridionalis",250313
+"204","aplidium glabrum",103647
+"205","ascidiidae",103443
+"206","ascidiella",103484
+"207","ciona intestinalis",103732
+"208","corella eumyota",173223
+"209","corella inflata",250375
+"210","stolidobranchia",103436
+"211","molgula complanata",103776
+"212","molgula occulta",103791
+"213","molgula retortiformis",103796
+"214","botryllus schlosseri",103862
+"215","doliolum nationalis",137247
+"216","asteroidea",123080
+"217","asteriidae",123121
+"218","astropecten articulatus",158491
+"219","ophiuroidea",123084
+"220","euechinoidea",149854
+"221","crinoidea",123081
+"222","enteropneusta",1820
+"223","protostomia",NA
+"224","ecdysozoa",NA
+"225","chromadorea",731848
+"226","ascolaimus",2415
+"227","chromadorida",2138
+"228","chromadoridae",2162
+"229","paracanthonchus caecus",120877
+"230","praeacanthonchus",2313
+"231","desmodora communis",120964
+"232","halomonhystera disjuncta",468111
+"233","sphaerolaimus hirsutus",121490
+"234","xyalidae",2190
+"235","daptonema normandicum",121540
+"236","theristus acer",121601
+"237","theristus",2469
+"238","diplogastrellus gracilis",1299683
+"239","diplogasteroides magnus",1299982
+"240","pellioditis marina",NA
+"241","panagrolaimus paetzoldi",1762560
+"242","enoplus",2504
+"243","thoracostomopsidae",2198
+"244","oncholaimus",2573
+"245","tripyloides",2588
+"246","arachnida",1300
+"247","acari",292684
+"248","oribatulidae",449181
+"249","torrenticola",NA
+"250","demodex",NA
+"251","limnohalacarus mamillatus",407028
+"252","metarhombognathus armatus",115006
+"253","gamasiphoides",NA
+"254","larinioides cornutus",NA
+"255","opiliones",1300999
+"256","pantopoda",1358
+"257","anoplodactylus lentus",158478
+"258","ophyiulus pilosus",945364
+"259","pachybolus ligulatus",NA
+"260","neocopepoda",155876
+"261","calanoida",1100
+"262","calanus finmarchicus",104464
+"263","candacia",104157
+"264","candacia pachydactyla",104483
+"265","podoplea",155879
+"266","cyclopoida",1101
+"267","doropygus rigidus",351173
+"268","rhynchomolgidae",128592
+"269","harpacticoida",1102
+"270","ameira scotti",115525
+"271","canthocamptidae",115140
+"272","attheyella crassa",362956
+"273","canuella perplexa",115723
+"274","dactylopusia pauciarticulata",416368
+"275","bradya",115331
+"276","harpacticus",115349
+"277","zaus caeruleus",116187
+"278","parastenhelia",115425
+"279","parathalestris parviseta",414707
+"280","monstrilloida",1106
+"281","clausidium vancouverense",NA
+"282","choniosphaera maenadis",135906
+"283","eumalacostraca",1086
+"284","pleocyemata",106670
+"285","paguridae",106738
+"286","alpheidae",106776
+"287","palaemonidae",106788
+"288","nikoides",204120
+"289","stylocheiron carinatum",110701
+"290","lirceus fontinalis",261020
+"291","leptomysis",119870
+"292","praunus flexuosus",120177
+"293","schistomysis spiritus",120206
+"294","siriella clausi",226375
+"295","balanomorpha",106039
+"296","balanidae",106057
+"297","pyrgomatidae",106058
+"298","verruca stroemia",106257
+"299","azygocypridina lowryi",450865
+"300","podocopida",1091
+"301","cythere lutea",127969
+"302","cytheruridae",127498
+"303","leptocythere lacertosa",128195
+"304","loxocorniculum mutsuense",788435
+"305","paradoxostoma setoense",462278
+"306","entomobryomorpha",NA
+"307","anurida maritima",118139
+"308","endopterygota",NA
+"309","ciidae",NA
+"310","myrmicinae",NA
+"311","cephus cinctus",NA
+"312","caeciliusetae",NA
+"313","polyneoptera",NA
+"314","hebesuncus",342571
+"315","echiniscoidea",342526
+"316","echiniscoides sigismundi",136679
+"317","spiralia",NA
+"318","ctenodontina",NA
+"319","monogononta",17903
+"320","conochilus coenobasis",1795189
+"321","collotheca campanulata",886998
+"322","ptygura beauchampi",1796131
+"323","ploima",17904
+"324","proales reinhardti",135036
+"325","lophotrochozoa",NA
+"326","annelida",882
+"327","lumbricina",14164
+"328","enchytraeidae",2038
+"329","enchytraeus",137347
+"330","lumbricillus",137351
+"331","lumbricillus lineatus",137438
+"332","marionina sublitoralis",137472
+"333","naidinae",176043
+"334","tubificinae",137344
+"335","tubificoides brownae",137572
+"336","thalassema thalassema",110375
+"337","chloeia",129184
+"338","schistomeringos rudolphi",154127
+"339","onuphidae",965
+"340","phyllodocida",892
+"341","glycera",129296
+"342","glycinde multidens",155098
+"343","micronephthys stammeri",NA
+"344","nephtys",129370
+"345","perinereis aibuhitensis",716016
+"346","phyllodocidae",931
+"347","eumida arctica",130640
+"348","harmothoe impar",130770
+"349","hermenia verruculosa",328326
+"350","lepidonotus squamatus",130801
+"351","paralepidonotus ampulliferus",209641
+"352","syllidae",948
+"353","amblyosyllis formosa",827408
+"354","myrianida",129659
+"355","salvatoria",195982
+"356","sphaerosyllis",129677
+"357","sedentaria",754175
+"358","canalipalpata",154974
+"359","manayunkia aestuarina",130926
+"360","rubifabriciola markginsbergi",598786
+"361","owenia fusiformis",130544
+"362","owenia rubra",NA
+"363","sabellaria alveolata",130866
+"364","sabellidae",985
+"365","calcisabella piloseta",NA
+"366","serpulidae",988
+"367","circeis armoricana",131198
+"368","eulaeospira convexis",751351
+"369","janua pagenstecheri",NA
+"370","jugaria quadrangularis",131206
+"371","paradexiospira vitrea",NA
+"372","salmacina",129578
+"373","serpula segmented",NA
+"374","spirorbis corallinae",NA
+"375","spirorbis rupestris",NA
+"376","spirorbis spirorbis",NA
+"377","spirorbis tridentatus",NA
+"378","magelona mirabilis",130271
+"379","spionidae",913
+"380","malacoceros fuliginosus",131131
+"381","polydora ciliata",131141
+"382","polydora giardi",NA
+"383","polydora onagawaensis",1611501
+"384","scolelepis squamata",335677
+"385","spio",129625
+"386","cirratulidae",919
+"387","cirratulus",129243
+"388","ctenodrilus serratus",129989
+"389","dodecaceria concharum",129967
+"390","pectinaria koreni",NA
+"391","amphitritides gracilis",131480
+"392","lanice conchilega",131495
+"393","lysilla",129701
+"394","nicolea zostericola",131508
+"395","terebellides californica",332504
+"396","chaetopterus",129229
+"397","arenicola marina",129868
+"398","arenicolides ecaudata",129870
+"399","capitella",129211
+"400","heteromastus filiformis",129884
+"401","nicomache personata",130314
+"402","opheliidae",924
+"403","orbinia latreillii",130522
+"404","paraonidae",903
+"405","lipobranchius jeffreysii",333843
+"406","cheilostomatida",110722
+"407","flustrina",153575
+"408","callopora",110851
+"409","callopora lineata",111197
+"410","celleporina hassallii",NA
+"411","celleporina",110875
+"412","escharoides coccinea",111498
+"413","umbonula littoralis",NA
+"414","cryptosula pallasiana",111343
+"415","phaeostachys spinifera",111521
+"416","schizomavella linearis",237812
+"417","aetea anguina",111062
+"418","conopeum reticulum",111351
+"419","electra pilosa",1789435
+"420","scruparia chelata",111540
+"421","ctenostomatida",110723
+"422","alcyonidioides mytili",468026
+"423","flustrellidra hispida",111621
+"424","amathia",111022
+"425","amathia imbricata",851593
+"426","cyclostomatida",110724
+"427","crisia aculeata",111690
+"428","crisia denticulata",111695
+"429","crisia eburnea",111696
+"430","crisia sigmoidea",111704
+"431","disporella",111044
+"432","plagioecia patina",111719
+"433","tubulipora liliacea",111760
+"434","barentsia hildegardae",851772
+"435","chaetonotida",247836
+"436","paucitubulatina",154555
+"437","aspidiophorus polystictos",114471
+"438","aspidiophorus tentaculatus",114472
+"439","chaetonotus",114427
+"440","halichaetonotus paradoxus",114520
+"441","rhopalura ophiocomae",119178
+"442","pandora pinna",140675
+"443","thracioidea",382318
+"444","ensis siliqua",140735
+"445","pharus legumen",140736
+"446","solen",138515
+"447","galeommatoidea",14629
+"448","lasaea undulata",592749
+"449","cardiidae",229
+"450","parvicardium exiguum",139008
+"451","donax",137906
+"452","scissula similis",420892
+"453","strigilla euronia",711175
+"454","hiatella arctica",140103
+"455","varicorbula gibba",378492
+"456","sphenia fragilis",420973
+"457","barnea candida",140767
+"458","mesodesmatidae",232
+"459","turtonia minuta",141875
+"460","veneridae",243
+"461","chamelea striatula",141908
+"462","pteriomorphia",206
+"463","arcoida",NA
+"464","arcoidea",489054
+"465","mytilidae",211
+"466","musculus",138225
+"467","mytilinae",224589
+"468","ostrea edulis",140658
+"469","gastropoda",101
+"470","caenogastropoda",224570
+"471","littorina littorea",140262
+"472","melarhaphe neritoides",140266
+"473","benthonella",138441
+"474","akiyoshia kobayashii",1250413
+"475","glacidorbis rusticus",1296507
+"476","pyramidellidae",162
+"477","otopleura nodicincta",217260
+"478","limapontia nigra",NA
+"479","elysia viridis",139686
+"480","limacina antarctica",509607
+"481","runcina adriatica",141405
+"482","diodora graeca",139951
+"483","haliotis",138050
+"484","gibbula zonata",225130
+"485","acanthochitonina",90
+"486","callochiton septemvalvis",140132
+"487","monostilifera",122303
+"488","eumonostilifera",568218
+"489","ototyphlonemertes correae",NA
+"490","nemertellina yamaokai",162345
+"491","tetrastemma",122419
+"492","palaeonemertea",122307
+"493","cephalothrix",1361004
+"494","callinera kasyanovi",1780374
+"495","phoronis",128545
+"496","phoronis muelleri",128549
+"497","phoronis ovalis",128550
+"498","gyrocotyle",105085
+"499","mazocraeidea",390779
+"500","pseudaxine trachuri",119687
+"501","prorhynchus alpinus",481335
+"502","macrostomum pusillum",142770
+"503","microstomum papillosum",142797
+"504","polycladida",2853
+"505","notoplana australis",414318
+"506","cylindrostoma",142251
+"507","cylindrostoma fingalianum",163254
+"508","acmostomum dioicum",142892
+"509","bresslauilla relicta",142967
+"510","provortex balticus",143000
+"511","provortex karlingi",143002
+"512","vejdovskya pellucida",143014
+"513","anoplodium stichopi",143025
+"514","kalyptorhynchia",142025
+"515","cicerinidae",142090
+"516","paulodora",155549
+"517","phonorhynchus helgolandicus",143197
+"518","polycystis naegelii",480853
+"519","byrsophlebs delamarei",143306
+"520","brinkmanniella palmata",143320
+"521","promesostoma",142412
+"522","didymorchis",479468
+"523","ptychopera plebeia",143443
+"524","trigonostomum armatum",143449
+"525","typhloplanoida",NA
+"526","trisaccopharynx westbladi",143383
+"527","calviriidae",479227
+"528","coelogynopora tenuis",143509
+"529","archilopsis spinosa",143526
+"530","monocelis fusca",143550
+"531","sabussowia dioica",143644
+"532","procerodes littoralis",143647
+"533","procerodes plebeja",NA
+"534","digenea",108400
+"535","notocotylus",108505
+"536","pacificreadium serrani",757317
+"537","phascolosoma granulatum",NA
+"538","golfingia elongata",NA
+"539","acoela",2847
+"540","aphanostoma",142142
+"541","kuma albiventer",379998
+"542","archaphanostoma agile",NA
+"543","paramecynostomum diversicolor",142687
+"544","paratomella",142184
+"545","sterreria",379828
+"546","anthozoa",1292
+"547","hexacorallia",1340
+"548","actiniaria",1360
+"549","actiniidae",100653
+"550","isosicyonis alba",173128
+"551","phyllodiscus semoni",290756
+"552","pachycerianthus fimbriatus",283820
+"553","corallimorphidae",100685
+"554","corynactis",100785
+"555","siderastrea siderea",207516
+"556","holaxonia",NA
+"557","erythropodium caribaeorum",289919
+"558","anthoathecata",13551
+"559","euphysa tentaculata",117564
+"560","ectopleura dumortierii",117982
+"561","hydractinia echinata",117644
+"562","distichopora anceps",288316
+"563","leptothecata",13552
+"564","campanulariidae",1606
+"565","calycella syringa",117402
+"566","halecium beanii",157947
+"567","halecium halecinum",231751
+"568","halecium labrosum",117591
+"569","halecium pusillum",117602
+"570","kirchenpaueria halecioides",117673
+"571","melicertissa",117142
+"572","staurostoma mertensii",594013
+"573","clytia gracilis",117367
+"574","clytia paulensis",117373
+"575","laomedea flexuosa",117382
+"576","obelia dichotoma",117386
+"577","obelia geniculata",117388
+"578","nemertesia antennina",117809
+"579","plumularia",117196
+"580","sertulariidae",1614
+"581","sertularella",117233
+"582","tiaropsidium kelseyi",285081
+"583","forskalia tholoides",196539
+"584","solmissus marshalli",221243
+"585","rhopalonema velatum",117865
+"586","scyphozoa",135220
+"587","semaeostomeae",135225
+"588","cyanea",135259
+"589","aurelia",135263
+"590","tentaculata",1249
+"591","charistephane fugiens",106375
+"592","calcarea",559
+"593","leucosolenia",131715
+"594","clathrina",131729
+"595","soleneiscus",164784
+"596","heteroscleromorpha",607950
+"597","raspailia vestigifera",NA
+"598","ulosa stuposa",NA
+"599","haliclona cinerea",NA
+"600","xestospongia",131849
+"601","oceanapia",131852
+"602","poecilosclerida",131599
+"603","spanioplon armaturum",133701
+"604","clathria armata",NA
+"605","ephydatia muelleri",167151
+"606","suberitida",845509
+"607","hymeniacidon kitchingi",132655
+"608","tethyida",845507
+"609","dictyoceratida",131595
+"610","nuclearia",707589
+"611","bangiaceae",143664
+"612","minerva aenigmata",376734
+"613","porphyra",143808
+"614","wildemania amplissima",501881
+"615","compsopogonales",22966
+"616","ahnfeltia plicata",144422
+"617","corallinales",15308
+"618","corallinoideae",163505
+"619","spongites",144025
+"620","hydrolithon improcerum",372894
+"621","hapalidiales",1306465
+"622","phymatolithon",144022
+"623","hildenbrandia crouanii",NA
+"624","hildenbrandia rubra",145712
+"625","stenopeltis gracilis",374569
+"626","rhodymeniophycidae",196243
+"627","bonnemaisonia asparagoides",144440
+"628","bonnemaisonia clavata",144441
+"629","callithamniaceae",493878
+"630","callithamnion collabens",376035
+"631","seirospora interrupta",144697
+"632","ceramiaceae",143671
+"633","anotrichium licmophorum",371454
+"634","ceramium",143834
+"635","compsothamnion thuyoides",NA
+"636","halurus flosculosus",144595
+"637","muellerena wattsii",375171
+"638","pterothamnion plumula",144683
+"639","spermothamnion repens",144702
+"640","ptilocladiopsis horrida",144685
+"641","dasya collabens",372404
+"642","heterosiphonia plumosa",144732
+"643","cryptopleura ramosa",144743
+"644","delesseria",143883
+"645","hypoglossum hypoglossoides",144756
+"646","phycodrys rubens",144773
+"647","osmundea pinnatifida",144847
+"648","neorhodomela larix",372616
+"649","odonthalia washingtoniensis",372622
+"650","polysiphonioideae",NA
+"651","polysiphonia",143853
+"652","polysiphonia atlantica",144608
+"653","polysiphonia stricta",144672
+"654","gelidiales",146315
+"655","ptilophora",204503
+"656","caulacanthus okamurae",496188
+"657","choreocolax polysiphoniae",145609
+"658","harveyella mirabilis",145610
+"659","cruoriaceae",143730
+"660","calliblepharis",144146
+"661","cystoclonium purpureum",145615
+"662","dicranema revolutum",371362
+"663","weeksia coccinea",374025
+"664","endocladiaceae",368772
+"665","kallymenia",144048
+"666","pugetia fragilissima",372652
+"667","peyssonnelia meridionalis",372727
+"668","mastocarpus stellatus",145650
+"669","stenogramma interruptum",145667
+"670","polyides rotunda",145668
+"671","gracilariaceae",143748
+"672","halymeniaceae",143697
+"673","plocamium cartilagineum",145782
+"674","chylocladia verticillata",145808
+"675","gastroclonium pacificum",372280
+"676","rhodella",144228
+"677","stylonema alsidii",145688
+"678","sar",112288
+"679","alveolata",536209
+"680","plasmodium",NA
+"681","eimeriorina",562814
+"682","cryptosporidium",391925
+"683","goussia szekelyi",NA
+"684","margolisiella",1770284
+"685","margolisiella islandica",NA
+"686","gregarinasina",562673
+"687","selenidium",562744
+"688","eugregarinorida",394869
+"689","ancora",562695
+"690","lecudina",562703
+"691","lecudina pellucida",563667
+"692","monocystis agilis",NA
+"693","paraschneideria metamorphosa",NA
+"694","urospora ovalis",563247
+"695","urospora travisiae",563253
+"696","ciliophora",11
+"697","intramacronucleata",425401
+"698","colpodea",414708
+"699","colpodida",414709
+"700","cyrtolophosidida",414710
+"701","haptoria",425417
+"702","didinium",341301
+"703","dileptus",415302
+"704","phialina",425537
+"705","phialina salinarum",426571
+"706","lacrymariidae",425420
+"707","trachelotractus entzi",426547
+"708","pleurostomatida",163060
+"709","amphileptus",390708
+"710","hemiophrys",NA
+"711","hemiophrys procera",NA
+"712","epiphyllum",425546
+"713","litonotus",178762
+"714","loxophyllum perihoplophorum",417364
+"715","loxophyllum",179322
+"716","nassophorea",425425
+"717","discotricha papillifera",179270
+"718","zosterodasys agamalievi",426701
+"719","oligohymenophorea",162991
+"720","gymnodinioides pitelkae",389272
+"721","hyalophysa",415489
+"722","hyalophysa lwoffi",NA
+"723","vampyrophrya pelagica",1030592
+"724","peritrichia",163067
+"725","urceolaria korschelti",NA
+"726","sessilida",414711
+"727","cothurnia",341291
+"728","vaginicola",345440
+"729","apocarchesium",NA
+"730","zoothamniidae",235773
+"731","zoothamnium",162403
+"732","zoothamnopsis",391916
+"733","scuticociliatia",414712
+"734","philasterida",341292
+"735","cinetochilum",415205
+"736","sathrophilus holtae",427034
+"737","cohnilembus verminus",417440
+"738","porpostoma notata",NA
+"739","cardiostomatella",415158
+"740","mesanophrys carcini",427050
+"741","metanophrys similis",387943
+"742","paranophrys marina",427056
+"743","glauconema trihymene",427062
+"744","philasteridae",341344
+"745","miamiensis avidus",427063
+"746","philaster",415804
+"747","philasterides armatalis",427069
+"748","homalogastra",425585
+"749","homalogastra setosa",1769006
+"750","uronema marinum",172341
+"751","uronemita parabinucleata",NA
+"752","cristigera",415247
+"753","cyclidium plouneouri",427113
+"754","pleuronema",163556
+"755","pleuronema binucleatum",NA
+"756","plagiopylea",414717
+"757","plagiopylida",414718
+"758","lechriopyla",NA
+"759","parasonderia vestita",NA
+"760","prostomatea",425487
+"761","prorodontida",425488
+"762","nolandia",NA
+"763","tiarina fusa",NA
+"764","placus salinus",417416
+"765","spirotrichea",1348
+"766","choreotrichia",425491
+"767","pelagostrobilidium",101182
+"768","rimostrombidium",101183
+"769","parastrombidinopsis minima",427385
+"770","strombidinopsis acuminata",101350
+"771","tintinnida",183533
+"772","tintinnopsis",163780
+"773","tintinnopsis parvula",417153
+"774","codonellopsis",204197
+"775","ptychocylis minor",427510
+"776","amphorellopsis",425527
+"777","eutintinnus",183543
+"778","eutintinnus perminutus",183568
+"779","salpingella",183566
+"780","tintinnidium",247915
+"781","tintinnidium mucicola",NA
+"782","hypotrichia",425500
+"783","aspidisca",179324
+"784","aspidisca aculeata",417096
+"785","aspidisca fusca",417099
+"786","aspidisca leptaspis",417100
+"787","aspidisca magna",417103
+"788","aspidisca orthopogon",427650
+"789","certesia quadrinucleata",427654
+"790","discocephalidae",425502
+"791","euplotes",179326
+"792","euplotes aediculatus",427655
+"793","euplotes alatus",427657
+"794","euplotes bisulcatus",427661
+"795","euplotes cristatus",417111
+"796","euplotes encysticus",NA
+"797","euplotes muscicola",NA
+"798","euplotes muscorum",427668
+"799","euplotes orientalis",427672
+"800","euplotes parabalteatus",427673
+"801","euplotes rariseta",341652
+"802","gastrocirrhus monilifer",427692
+"803","diophrys apoligothrix",427694
+"804","diophrys appendiculata",341637
+"805","diophrys japonica",NA
+"806","paradiophrys irmgard",427701
+"807","paradiophrys zhangi",1768985
+"808","uronychia",341364
+"809","oligotrichia",425509
+"810","antestrombidium agathae",NA
+"811","parallelostrombidium",393604
+"812","parallelostrombidium conicum",761915
+"813","sinistrostrombidium",NA
+"814","spirostrombidium subtropicum",761917
+"815","strombidium",101195
+"816","strombidium apolatum",389612
+"817","strombidium conicum",101289
+"818","strombidium rassoulzadegani",595221
+"819","spirotontonia",425652
+"820","protocruzia",415870
+"821","protocruzia adherens",427746
+"822","protocruzia granulosa",427748
+"823","protocruzia tuzeti",427750
+"824","oxytrichidae",390772
+"825","heterotrichea",425519
+"826","condylostoma magnum",417077
+"827","condylostoma spatiosum",427936
+"828","condylostoma",172316
+"829","eufolliculina",111849
+"830","eufolliculina uhligi",111868
+"831","peritromus",172321
+"832","tracheloraphis",179292
+"833","voromonas pontica",NA
+"834","dinophyceae",19542
+"835","blastodinium",562641
+"836","halostylodinium arenarium",612887
+"837","pellucidodinium psammophilum",NA
+"838","phalacroma",109466
+"839","sinophysis",109467
+"840","sinophysis grandis",232530
+"841","gonyaulacales",109391
+"842","azadinium",391508
+"843","gambierdiscus scabrosus",833060
+"844","alexandrium",109470
+"845","alexandrium andersonii",246835
+"846","alexandrium margalefii",233447
+"847","alexandrium ostenfeldii",109712
+"848","gonyaulax",109519
+"849","gymnodiniales",109392
+"850","gymnodiniaceae",109410
+"851","akashiwo",231787
+"852","amphidinium",109473
+"853","apicoporus",836528
+"854","cochlodinium",109474
+"855","gymnodinium microreticulatum",232813
+"856","gyrodinium",109476
+"857","lepidodinium",231790
+"858","nusuttodinium poecilochroum",840906
+"859","paragymnodinium",707629
+"860","pheopolykrikos beauchampii",109896
+"861","polykrikos herdmaniae",623118
+"862","polykrikos kofoidii",109899
+"863","karlodinium",231789
+"864","ptychodiscus",109478
+"865","erythropsidinium",231793
+"866","proterythropsis",231794
+"867","noctilucales",109393
+"868","oxyrrhis marina",109902
+"869","peridiniales",109394
+"870","amphidiniopsis",109556
+"871","amphidiniopsis rotundata",626385
+"872","peridinium",109549
+"873","scrippsiella",109545
+"874","protoperidinium",109553
+"875","protoperidinium bipes",110208
+"876","protoperidinium claudicans",163862
+"877","protoperidinium depressum",110217
+"878","protoperidinium excentricum",110220
+"879","protoperidinium pellucidum",110245
+"880","protoperidinium thorianum",110260
+"881","protoperidinium thulesense",232861
+"882","prorocentrum",109566
+"883","prorocentrum foraminosum",232437
+"884","suessiaceae",231813
+"885","pelagodinium beii",NA
+"886","syndiniales",146213
+"887","amoebophrya",109448
+"888","duboscquella",601282
+"889","ellobiopsis",562628
+"890","thalassomyces",562629
+"891","hematodinium",577498
+"892","thoracosphaeraceae",109438
+"893","perkinsidae",103339
+"894","parvilucifera",603335
+"895","parvilucifera prorocentri",NA
+"896","parvilucifera sinerae",707712
+"897","perkinsus",103344
+"898","rhizaria",582420
+"899","cercozoa",562852
+"900","cercomonadidae",593689
+"901","cercomonas",577493
+"902","cercomonas agilis",NA
+"903","minorisa",NA
+"904","glissomonadida",590939
+"905","bodomorpha",603911
+"906","orciraptor",NA
+"907","granofilosea",590925
+"908","massisteria",428550
+"909","thecofilosea",590699
+"910","cryomonadida",591251
+"911","cryothecomonas",118011
+"912","cryothecomonas aestivalis",118045
+"913","rhogostoma",1737147
+"914","ebria",118014
+"915","coelodendrum ramosissimum",409593
+"916","medusetta parthenopaea",NA
+"917","trachyrhizium urniformis",NA
+"918","ventrifissuridae",1737154
+"919","cyranomonas",NA
+"920","cyranomonas australis",NA
+"921","gymnophrys",NA
+"922","nuclearia like",NA
+"923","endomyxa",562853
+"924","bonamia",246870
+"925","haplosporidiidae",1647552
+"926","haplosporidium patagon",NA
+"927","minchinia",562869
+"928","minchinia chitonis",563579
+"929","minchinia tapetis",NA
+"930","haplosporidian parasite",NA
+"931","paradinium",562661
+"932","maullinia ectocarpi",NA
+"933","phagomyxa bellerocheae",NA
+"934","phagomyxa odontellae",NA
+"935","woronina",NA
+"936","vampyrellidae",872112
+"937","marimonadida",591248
+"938","abollifer globosa",872068
+"939","micrometopion",590937
+"940","cyphoderiidae",136743
+"941","paulinella",136779
+"942","thaumatomonadida",591250
+"943","allas",603763
+"944","thaumatomastix",137288
+"945","phyllostaurus",1699131
+"946","spumellaria",345835
+"947","stramenopiles",NA
+"948","labyrinthulomycetes",NA
+"949","sorodiplophrys",NA
+"950","amphitraemidae",NA
+"951","labyrinthula",119090
+"952","stellarchytrium dubum",NA
+"953","oblongichytrium",590572
+"954","thraustochytriaceae",22156
+"955","aplanochytrium",162949
+"956","aplanochytrium blankum",NA
+"957","labyrinthuloides",177380
+"958","schizochytrium minutum",119116
+"959","sicyoidochytrium",NA
+"960","thraustochytrium",119095
+"961","thraustochytrium kinnei",119121
+"962","thraustochytrium striatum",119123
+"963","thraustochytriidae",NA
+"964","bicosoecida",NA
+"965","bicosoeca",601409
+"966","bicosoeca kenaiensis",NA
+"967","bicosoeca vacillans",NA
+"968","caecitellus parvulus",104016
+"969","rictus",1736990
+"970","blastocystis hominis",708115
+"971","blastocystis",1635533
+"972","cantina marsupialis",NA
+"973","wobblia",590696
+"974","wobblia lunata",590697
+"975","developayella",136141
+"976","developayella elegans",136146
+"977","ochrophyta",345465
+"978","bacillariophyta",148898
+"979","bacillariophyceae",148899
+"980","bacillariophycidae",148902
+"981","bacillariaceae",149002
+"982","bacillaria",149148
+"983","cylindrotheca",149003
+"984","cymbellonitzschia banzuensis",1307995
+"985","fragilariopsis",149313
+"986","nitzschia",149045
+"987","nitzschia longissima",149150
+"988","nitzschia ovalis",175430
+"989","nitzschia sigma",196817
+"990","psammodictyon constrictum",1308804
+"991","tryblionella apiculata",NA
+"992","cocconeis pediculus",149377
+"993","cocconeis stauroneiformis",NA
+"994","rhoicosphenia stoermeri",1214718
+"995","entomoneis ornata",163645
+"996","lyrella",180390
+"997","achnanthes",149191
+"998","naviculales",149015
+"999","amphiprora alata",NA
+"1000","frustulia",604810
+"1001","diploneis",149018
+"1002","craspedostauros amphoroides",NA
+"1003","eolimna subminuscula",NA
+"1004","haslea crucigera",NA
+"1005","haslea nipkowii",549204
+"1006","haslea ostrearia",NA
+"1007","meuniera membranacea",NA
+"1008","navicula",149142
+"1009","navicula perminuta",NA
+"1010","navicula pulchripora",NA
+"1011","phaeodactylum",175582
+"1012","pinnularia",149208
+"1013","gyrosigma acuminatum",149035
+"1014","pleurosigma",149181
+"1015","sellaphora",157078
+"1016","campylodiscus",149616
+"1017","campylodiscus thuretii",NA
+"1018","cymatopleura",149007
+"1019","surirella brightwellii",NA
+"1020","surirella",149084
+"1021","amphora",149200
+"1022","amphora abludens",NA
+"1023","amphora coffeiformis",NA
+"1024","amphora eunotia",969104
+"1025","amphora montana",NA
+"1026","undatella",577743
+"1027","undatella quadrata",NA
+"1028","leptocylindrus danicus",NA
+"1029","leptocylindrus minimus",NA
+"1030","corethron",149109
+"1031","coscinodiscophycidae",148971
+"1032","coscinodiscus",148917
+"1033","coscinodiscus radiatus",NA
+"1034","actinoptychus undulatus",983260
+"1035","actinocyclus",196347
+"1036","guinardia",149111
+"1037","guinardia delicatula",NA
+"1038","guinardia striata",NA
+"1039","proboscia",149167
+"1040","rhizosolenia",149069
+"1041","rhizosolenia shrubsolei",NA
+"1042","rhizosolenia similoides",NA
+"1043","fragilariales",148951
+"1044","fragilariaceae",148952
+"1045","ardissonea formosa",621678
+"1046","fragilaria famelica",NA
+"1047","grammonema",602444
+"1048","pteroncola inane",NA
+"1049","staurosiraceae",NA
+"1050","mediophyceae",NA
+"1051","biddulphia",148967
+"1052","odontella",148963
+"1053","odontella regia",NA
+"1054","cerataulina daemon",NA
+"1055","cymatosiraceae",149010
+"1056","arcocellulus",450612
+"1057","brockmanniella brockmannii",NA
+"1058","cymatosira belgica",NA
+"1059","ditylum sol",NA
+"1060","bolidomonas",345469
+"1061","bolidomonas mediterranea",NA
+"1062","chrysophyceae",146230
+"1063","chromulinales",248107
+"1064","chrysoxys",601177
+"1065","spumella",428524
+"1066","uroglena",248172
+"1067","dictyochales",157256
+"1068","dictyocha",157258
+"1069","pedinellales",160597
+"1070","apedinella radians",248097
+"1071","pedinella",248148
+"1072","pteridomonas",341352
+"1073","pelagophyceae",345500
+"1074","sarcinochrysidales",157466
+"1075","sarcinochrysis",370187
+"1076","glossomastix chrysoplasta",376357
+"1077","phaeophyceae",830
+"1078","dictyotaceae",143716
+"1079","distromium decumbens",372007
+"1080","rugulopteryx okamurae",495597
+"1081","ectocarpales",842
+"1082","scytosiphon lomentaria",145869
+"1083","fucus ceranoides",145542
+"1084","coccophora langsdorfii",372015
+"1085","chorda filum",145722
+"1086","lessonia variegata",373467
+"1087","botrydiopsidaceae",599673
+"1088","raphidophyceae",160581
+"1089","chattonellales",160582
+"1090","fibrocapsa japonica",233761
+"1091","merotricha bacillata",375673
+"1092","atkinsiella dubia",172150
+"1093","haliphthoros",172147
+"1094","eurychasma dicksonii",172155
+"1095","chlamydomyzium",NA
+"1096","olpidiopsis",172191
+"1097","phytophthora",1457131
+"1098","pontisma porphyrae",NA
+"1099","pontisma pyropiae",NA
+"1100","pythium",172180
+"1101","pythium insidiosum",NA
+"1102","pythium monospermum",NA
+"1103","pythium rostratum",NA
+"1104","saprolegniaceae",172169
+"1105","aphanomyces",394836
+"1106","pirsonia",118022
+"1107","pirsonia verrucosa",118068
+"1108","chlorophyta",801
+"1109","chlamydomonas",178583
+"1110","chloromonas nivalis",622620
+"1111","chlamydomonadaceae",178973
+"1112","raphidonema sempervirens",NA
+"1113","prasiolaceae",143771
+"1114","mamiellophyceae",493835
+"1115","crustomastix",369536
+"1116","dolichomastigales",493836
+"1117","bathycoccus prasinos",345459
+"1118","ostreococcus",345496
+"1119","mamiella gilva",134562
+"1120","mantoniella squamata",134563
+"1121","nephroselmis pyriformis",134541
+"1122","pyramimonadales",17330
+"1123","cymbomonas tetramitiformis",134545
+"1124","pterosperma",160595
+"1125","pyramimonas gelidicola",341612
+"1126","pyramimonas obovata",376151
+"1127","pyramimonas parkeae",495287
+"1128","pyramimonas olivacea",495346
+"1129","pyramimonas",134529
+"1130","neodangemannia microcystis",837248
+"1131","monostroma angicava",371797
+"1132","ulva",144296
+"1133","cladophora albida",145033
+"1134","rhizoclonium lubricum",NA
+"1135","streptophytina",NA
+"1136","orthotrichales",147485
+"1137","polypodiidae ferns",NA
+"1138","pinus taeda",NA
+"1139","pentapetalae",NA
+"1140","asterids",NA
+"1141","campanulids",NA
+"1142","apioideae",NA
+"1143","araliaceae",594776
+"1144","ilex",415505
+"1145","lamiids",NA
+"1146","lamiales",234498
+"1147","plantaginaceae",382434
+"1148","nicotiana attenuata",NA
+"1149","capsicum annuum",NA
+"1150","chenopodium quinoa",NA
+"1151","limonium bicolor",NA
+"1152","polygonoideae",NA
+"1153","rumex palustris",NA
+"1154","rumex acetosa",NA
+"1155","rosids",NA
+"1156","fabids",NA
+"1157","cucumis sativus",NA
+"1158","fagales",414692
+"1159","ostryopsis davidiana",NA
+"1160","lithocarpus henryi",NA
+"1161","rosales",414693
+"1162","cannabaceae",1492574
+"1163","amygdaloideae",NA
+"1164","rosoideae",NA
+"1165","rubus",415940
+"1166","urticaceae",414915
+"1167","malvaceae",413963
+"1168","sapindaceae",1492477
+"1169","halodule uninervis",208924
+"1170","allium",NA
+"1171","poales",234035
+"1172","juncus effusus",NA
+"1173","musa acuminata",1492213
+"1174","aconitum carmichaelii",NA
+"1175","ranunculus",416215
+"1176","isoetes engelmannii",NA
+"1177","dictyamoeba vorax",NA
+"1178","corticiaceae",147623
+"1179","percomorphaceae",NA
+"1180","perophoridae",103447
+"1181","atrochromadora microlaima",120675
+"1182","anoplodactylus petiolatus",134723
+"1183","heterotremata",106680
+"1184","siriella armata",120208
+"1185","isotomidae",118096
+"1186","eunicidae",966
+"1187","gastrolepidia clavigera",221114
+"1188","filograna implexa",130989
+"1189","dasybranchus caducus",129881
+"1190","cribrilina cryptooecium",NA
+"1191","tubulipora lobifera",111761
+"1192","chaetonotidae",114416
+"1193","mytiloida",NA
+"1194","eulimidae",135
+"1195","heteronemertea",122305
+"1196","stylasteridae",22805
+"1197","hydranthea margarica",117610
+"1198","trachylinae",22754
+"1199","raspailiinae",168004
+"1200","microcionidae",131641
+"1201","epistylis",163583
+"1202","vorticella",163573
+"1203","strombidinopsis batos",595206
+"1204","apostrombidium",595092
+"1205","paragymnodinium shiwhaense",761431
+"1206","acanthochiasmidae",367346
+"1207","berkeleya hyalina",NA
+"1208","navicula tripunctata",NA
+"1209","asteromphalus",162254
+"1210","ardissonea baculus",NA
+"1211","botrydiopsis constricta",616284
+"1212","mamiella",134531
+"1213","50 kb",NA
+"1214","neurada procumbens",NA
+"1215","aurantioideae",NA
+"1216","pavlova gyrans",573929
+"1217","herpotrichiellaceae",100036
+"1218","lecanoromycetidae",172229
+"1219","kluyveromyces marxianus",NA
+"1220","meruliaceae",NA
+"1221","tigriopus fulvus",363760
+"1222","spadella",105413
+"1223","nudisyllis pulligera",248051
+"1224","salvatoria limbata",195989
+"1225","plumatellidae",182715
+"1226","filicrisia geniculata",111708
+"1227","plectanocotyle gurnardi",119773
+"1228","microstomum lineare",142793
+"1229","byrsophlebidae",142102
+"1230","astrotorhynchus bifidus",143384
+"1231","proxenetes karlingi",143424
+"1232","trigonostomum penicillatum",143455
+"1233","lytocarpia canepa",284158
+"1234","mesophyllum",144020
+"1235","crouania attenuata",144575
+"1236","champia",144237
+"1237","tetrahymena",416056
+"1238","paramecium",415756
+"1239","urceolaria urechi",NA
+"1240","telotrochidium",NA
+"1241","carchesium polypinum",254450
+"1242","epicarchesium",391846
+"1243","spirostrombidium schizostomum",427722
+"1244","blepharisma",178694
+"1245","stentor polymorphus",428000
+"1246","spongospora subterranea",1501345
+"1247","encyonema minutum",NA
+"1248","entomoneis",156598
+"1249","mischococcales",115058
+"1250","chlorella clade",NA
+"1251","cucurbitaceae",414795
+"1252","durio zibethinus",NA
+"1253","oryza",1489543
+"1254","hordeum vulgare",NA
+"1255","aegilops tauschii",NA
+"1256","triticum aestivum",NA
+"1257","triticum urartu",NA
+"1258","musaceae",1492210
+"1259","flabellula citata",120594
+"1260","isochrysis galbana",573884
+"1261","monosiga ovata",105645
+"1262","piedraia hortae",NA
+"1263","teratosphaeriaceae",988404
+"1264","lecanoraceae",147714
+"1265","placopsis argillacea",NA
+"1266","sordariomycetes",437254
+"1267","metarhizium",NA
+"1268","diaporthe",437955
+"1269","saccharomycetales",100018
+"1270","clavispora lusitaniae",NA
+"1271","hanseniaspora valbyensis",NA
+"1272","hydnoporia olivacea",NA
+"1273","dioszegia antarctica",988736
+"1274","cutaneotrichosporon daszewskae",NA
+"1275","entyloma ficariae",NA
+"1276","spizellomycetaceae",438948
+"1277","zoophagus insidians",NA
+"1278","rhabditida",2143
+"1279","choriorhabditis cristata",NA
+"1280","calyptronema",2557
+"1281","histiostomatidae",NA
+"1282","endeis",134588
+"1283","itunella muelleri",115694
+"1284","paramphiascella fulvofasciata",115960
+"1285","hippolyte varians",107518
+"1286","cytheroidea",127477
+"1287","sminthurus viridis",NA
+"1288","acridoidea",NA
+"1289","notholca acuminata",134996
+"1290","lumbricillus rutilus",1071789
+"1291","terebella lapidaria",131542
+"1292","scolecida",183607
+"1293","bugulina turbinata",834020
+"1294","crisularia plumosa",834039
+"1295","microporella ciliata",111421
+"1296","plicatula",204437
+"1297","rhabditophora",479175
+"1298","toia",142318
+"1299","aulactinia marplatensis",283378
+"1300","staurocladia vallentini",284632
+"1301","rhacostoma atlanticum",156967
+"1302","mitrocomidae",14665
+"1303","raspaciona aculeata",133139
+"1304","mycale angulosa",NA
+"1305","suberites ficus",134285
+"1306","jania",144012
+"1307","asparagopsis armata",144438
+"1308","monocystis",562732
+"1309","acineria incurvata",426633
+"1310","ophrydium versatile",NA
+"1311","vorticella convallaria",426952
+"1312","cyclidium glaucoma",163559
+"1313","caryotricha minuta",427710
+"1314","omegastrombidium elegans",427716
+"1315","spirostomum caudatum",NA
+"1316","lingulodinium",231799
+"1317","syndinium",562667
+"1318","phagomyxa",172144
+"1319","cylindrotheca closterium",149004
+"1320","pedospumella encystans",624263
+"1321","sargassum fusiforme",494972
+"1322","achlya bisexualis",NA
+"1323","tetraselmis",134526
+"1324","ancyromonas howeae",NA
+"1325","helgoeca nana",580086
+"1326","pleosporales",146409
+"1327","verrucaria",147701
+"1328","agaricales",100021
+"1329","coleosporiaceae",1485565
+"1330","melampsora larici",NA
+"1331","chytriomyces",NA
+"1332","ophiocanops fugiens",243526
+"1333","monhysterida",2139
+"1334","eucyclops",149781
+"1335","nephropidae",106741
+"1336","neanura muscorum",NA
+"1337","trichocerca rattus",148342
+"1338","phyllodoce longipes",130673
+"1339","unionoidea",491768
+"1340","panpulmonata",NA
+"1341","nephasoma columbaris",NA
+"1342","lithophyllum incrustans",145152
+"1343","protocyclidium sinica",NA
+"1344","parastrombidinopsis shimi",396309
+"1345","chromera",594555
+"1346","amphidinium asymmetricum",109720
+"1347","cyphoderia littoralis",NA
+"1348","paulinella longichromatophora",NA
+"1349","ulkenia",119096
+"1350","impatiens",594782
+"1351","rosaceae",414881
+"1352","typha angustifolia",1415753
+"1353","savillea micropora",NA
+"1354","phaffia rhodozyma",NA
+"1355","araeolaimida",231698
+"1356","howeina",461139
+"1357","xiphichilus",462310
+"1358","heterodrilus",137382
+"1359","sigalion",129594
+"1360","bugulina fulva",834010
+"1361","placida cremoniana",141564
+"1362","carinoma hamanako",712125
+"1363","callinera grandis",122611
+"1364","scanorhynchus forcipatus",143233
+"1365","spirorchiidae",108479
+"1366","mecynostomidae",142038
+"1367","ophryoglenina",425440
+"1368","cardiostomatella vermiformis",427046
+"1369","chytriodinium",494074
+"1370","gonyaulax spinifera",110041
+"1371","coelodendrum furcatissimum",NA
+"1372","fistulifera saprophila",NA
+"1373","ulvales",827
+"1374","malva sylvestris",NA
+"1375","paramoeba pemaquidensis",NA
+"1376","vexillifera kereti",NA
+"1377","parvamoeba rugata",120633
+"1378","squamamoeba japonica",761218
+"1379","chroomonas placoidea",573829
+"1380","ministeria vibrans",118061
+"1381","cladosporium bruhnei",NA
+"1382","dipturus",105762
+"1383","raja brachyura",367297
+"1384","limanda limanda",127139
+"1385","microstomus kitt",127140
+"1386","centrolabrus exoletus",126961
+"1387","ctenolabrus rupestris",126964
+"1388","labrus bergylta",126965
+"1389","symphodus",126023
+"1390","myoxocephalus",126152
+"1391","taurulus bubalis",127204
+"1392","cyclopterus lumpus",127214
+"1393","liparis montagui",127220
+"1394","gasterosteus",125775
+"1395","gasterosteus aculeatus",126505
+"1396","spinachia spinachia",126508
+"1397","zoarces viviparus",127123
+"1398","chelidonichthys cuculus",127259
+"1399","eutrigla gurnardus",150637
+"1400","ammodytidae",125516
+"1401","ammodytes marinus",126751
+"1402","ammodytes tobianus",126752
+"1403","gymnammodytes semisquamatus",126754
+"1404","hyperoplus lanceolatus",126756
+"1405","buenia jeffreysii",126872
+"1406","crystallogobius linearis",126878
+"1407","gobius paganellus",126893
+"1408","pomatoschistus minutus",126928
+"1409","lipophrys pholis",126768
+"1410","scomber scombrus",127023
+"1411","merlangius merlangus",126438
+"1412","pollachius pollachius",126440
+"1413","pollachius virens",126441
+"1414","trisopterus esmarkii",126444
+"1415","trisopterus minutus",126446
+"1416","ciliata mustela",126448
+"1417","molva molva",126461
+"1418","sprattus sprattus",126425
+"1419","boreoeutheria",NA
+"1420","rattus norvegicus",993634
+"1421","ovis",993625
+"1422","canis lupus",1506689
+"1423","halichoerus grypus",137080
+"1424","neognathae",NA
+"1425","campylopterus hemileucurus",NA
+"1426","uria aalge",137133
+"1427","haematopus",147435
+"1428","chroicocephalus",465357
+"1429","larus",137043
+"1430","larus canus",137141
+"1431","stercorarius",137051
+"1432","sturnus",558590
+"1433","riparia riparia",225984
+"1434","plestiodon laticeps",NA
+"1435","mantidactylus charlotteae",NA
+"1436","diplosoma listerianum",103579
+"1437","ascidiella scabra",103719
+"1438","botrylloides leachii",250081
+"1439","dendrodoa grossularia",103882
+"1440","asterias rubens",123776
+"1441","marthasterias glacialis",123803
+"1442","henricia sanguinolenta",123974
+"1443","henricia tumida",369147
+"1444","astropecten irregularis",123867
+"1445","amphipholis squamata",125064
+"1446","amphiura filiformis",125080
+"1447","ophiactis balli",125110
+"1448","ophiocomina nigra",125027
+"1449","ophiothrix fragilis",125131
+"1450","ophiarachnella",123545
+"1451","echinocardium cordatum",124392
+"1452","spatangus purpureus",124418
+"1453","echinidae",123160
+"1454","psammechinus miliaris",124319
+"1455","glossobalanus marginatus",137607
+"1456","arthropoda",1065
+"1457","ameronothrus maculatus",508290
+"1458","demodex folliculorum",NA
+"1459","oligolophus tridens",NA
+"1460","acartia clausii",NA
+"1461","calanus",104152
+"1462","centropages hamatus",104496
+"1463","isias clavipes",104501
+"1464","temora longicornis",104878
+"1465","eucyclops serrulatus",363322
+"1466","oithona similis",106656
+"1467","rhizothrix minuta",116481
+"1468","thalestris longimana",116619
+"1469","galathea intermedia",107150
+"1470","pisidia longicornis",107188
+"1471","porcellana platycheles",107190
+"1472","cancer pagurus",107276
+"1473","eurynome spinosa",107319
+"1474","hyas araneus",107322
+"1475","carcinus maenas",107381
+"1476","liocarcinus marmoreus",NA
+"1477","necora puber",107398
+"1478","xantho pilipes",107441
+"1479","hippolytidae",106777
+"1480","atylus swammerdami",NA
+"1481","dexamine thea",102136
+"1482","ischyrocerus",101569
+"1483","jassa falcata",102431
+"1484","jassa pusilla",102437
+"1485","amphitholina cuniculus",101992
+"1486","ampithoe rubricata",102002
+"1487","gammarus locusta",102281
+"1488","gammarus obtusatus",NA
+"1489","apherusa jurinei",102168
+"1490","calliopius laeviusculus",102178
+"1491","hyalidae",101385
+"1492","apohyale stebbingi",236510
+"1493","jaera albifrons",NA
+"1494","janira maculosa",118732
+"1495","idotea emarginata",119043
+"1496","clistosaccus paguri",134786
+"1497","balanus",106122
+"1498","balanus balanus",106213
+"1499","semibalanus balanoides",106210
+"1500","chthamalus montagui",106230
+"1501","chthamalus stellatus",106231
+"1502","archisotoma besselsi",232012
+"1503","hypogastrura",118113
+"1504","obtectomera",NA
+"1505","philorinum sordidum",NA
+"1506","tachinus signatus",NA
+"1507","coelopa frigida",NA
+"1508","culicoides impunctatus",NA
+"1509","halocladius variabilis",118152
+"1510","metriocnemus eurynotus",NA
+"1511","testudinella clypeata",134974
+"1512","synchaeta triophthalma",135066
+"1513","poecilobdella manillensis",NA
+"1514","helobdella elongata",NA
+"1515","lumbricus rubellus",994658
+"1516","enchytraeus albellus",1339998
+"1517","enchytraeus moebii",NA
+"1518","lumbricillus buelowi",137427
+"1519","lumbricillus dubius",NA
+"1520","lumbricillus kaloensis",137436
+"1521","lumbricillus semifuscus",NA
+"1522","lumbricillus viridis",137454
+"1523","aktedrilus arcticus",137502
+"1524","thalassodrilus prostatus",137547
+"1525","baltidrilus costatus",743898
+"1526","clitellio arenarius",NA
+"1527","tubificoides benedii",137571
+"1528","ophryotrocha puerilis",130031
+"1529","nereimyra punctata",130185
+"1530","psamathe fusca",152249
+"1531","hediste diversicolor",152302
+"1532","nereis",129379
+"1533","nereis falsa",NA
+"1534","platynereis",129381
+"1535","pholoe baltica",130599
+"1536","pholoe inornata",130601
+"1537","eulalia clavigera",155375
+"1538","eulalia viridis",130639
+"1539","phyllodoce lineata",334508
+"1540","phyllodoce mucosa",334512
+"1541","harmothoe imbricata",130769
+"1542","sthenelais boa",131074
+"1543","amblyosyllis spectabilis",1258721
+"1544","eusyllis blomstrandi",131290
+"1545","dinophilus vorticoides",130002
+"1546","nerilla antennata",130437
+"1547","polygordius lacteus",130714
+"1548","rubifabriciola tonerella",1449377
+"1549","pomatoceros triqueter",NA
+"1550","aonides oxycephala",131106
+"1551","boccardia proboscidea",327249
+"1552","laonice cirrata",131128
+"1553","scolelepis neglecta",NA
+"1554","cirratulus cirratus",129959
+"1555","cirriformia tentaculata",129964
+"1556","dodecaceria ater",129965
+"1557","petta pusilla",130597
+"1558","pista sauriaui",1542831
+"1559","flustra foliacea",111367
+"1560","celleporella angusta",111395
+"1561","celleporella hyalina",111397
+"1562","escharella immersa",111484
+"1563","membranipora membranacea",111411
+"1564","amathia gracilis",851589
+"1565","lasaea rubra",140176
+"1566","cerastoderma edule",138998
+"1567","parvicardium scabrum",139012
+"1568","modiolus barbatus",140464
+"1569","mytilus",138228
+"1570","mytilus edulis",140480
+"1571","mytilus trossulus",140482
+"1572","cerithiopsis tubercularis",139085
+"1573","lacuna pallidula",140168
+"1574","littorina",138135
+"1575","littorina fabalis",140261
+"1576","littorina saxatilis",140264
+"1577","onoba semicostata",141320
+"1578","trivia monacha",141744
+"1579","tritia incrassata",876825
+"1580","nucella lapillus",140403
+"1581","aeolidia",137630
+"1582","facelina bostoniensis",139908
+"1583","favorinus branchialis",139940
+"1584","embletonia pulchra",141638
+"1585","tergipes tergipes",141641
+"1586","ancula gibbosa",140029
+"1587","polycera",138369
+"1588","polycera capitata",NA
+"1589","limapontia capitata",140229
+"1590","limapontia senestra",140231
+"1591","placida dendritica",141565
+"1592","patella",138312
+"1593","patella pellucida",147459
+"1594","patella vulgata",140685
+"1595","calliostoma zizyphinum",141767
+"1596","margarites helicinus",141821
+"1597","tricolia pullus",141700
+"1598","steromphala cineraria",1039839
+"1599","steromphala umbilicaris",1039840
+"1600","lepidochitona cinerea",152774
+"1601","nemertea",152391
+"1602","amphiporus lactifloreus",122666
+"1603","emplectonema gracile",122710
+"1604","oerstedia dorsalis",122817
+"1605","tetrastemma candidum",122764
+"1606","tetrastemma melanocephalum",122791
+"1607","tetrastemma vermiculus",122806
+"1608","cephalothrix rufifrons",122599
+"1609","lineidae",122314
+"1610","lineus",122358
+"1611","lineus ruber",122536
+"1612","lineus viridis",122543
+"1613","hubrechtella dubia",122607
+"1614","phoronis hippocrepia",128548
+"1615","phoronopsis harmeri",128555
+"1616","microstomum westbladi",NA
+"1617","monocelis lineata",143552
+"1618","cryptocotyle lingua",109051
+"1619","himasthla quissetensis",736173
+"1620","notocelis gullmarensis",142698
+"1621","cnidaria",1267
+"1622","actinia",100694
+"1623","urticina",100706
+"1624","corynactis californica",283836
+"1625","alcyonium",125284
+"1626","corymorpha nutans",117452
+"1627","coryne pusilla",117471
+"1628","sarsia lovenii",117483
+"1629","sarsia tubulosa",117491
+"1630","zanclea sessilis",117999
+"1631","lizzia blondina",117345
+"1632","clava multicornis",117426
+"1633","leuckartiara octona",117791
+"1634","aequorea vitrina",117273
+"1635","gonothyraea loveni",117377
+"1636","orthopyxis integra",117393
+"1637","melicertum octocostatum",117743
+"1638","clytia hemisphaerica",117368
+"1639","obeliidae",NA
+"1640","nemertesia",117195
+"1641","dynamena pumila",117888
+"1642","muggiaea atlantica",135441
+"1643","nanomia cara",135496
+"1644","cyanea capillata",135301
+"1645","aurelia aurita",135306
+"1646","craterolophus convolvulus",135312
+"1647","haliclystus auricula",135322
+"1648","haliclystus octoradiatus",135323
+"1649","haliclona fascigera",NA
+"1650","pachychalina tenera",178479
+"1651","phorbas dives",133676
+"1652","myxilla incrustans",NA
+"1653","halichondria bowerbanki",NA
+"1654","halichondria panicea",NA
+"1655","halichondria",131807
+"1656","hymeniacidon",131808
+"1657","hymeniacidon perlevis",132663
+"1658","oscarella",131979
+"1659","oscarella balibaloi",564911
+"1660","oscarella viridis",169725
+"1661","bangia fuscopurpurea",157261
+"1662","boreophyllum birdiae",626025
+"1663","neoporphyra haitanensis",1537062
+"1664","porphyra dioica",144426
+"1665","porphyra rosengurttii",NA
+"1666","pyropia leucosticta",626059
+"1667","corallina",144007
+"1668","corallina caespitosa",NA
+"1669","corallina officinalis",145108
+"1670","lithophyllum orbiculatum",145157
+"1671","melobesia membranacea",145182
+"1672","phymatolithon lenormandii",145202
+"1673","phymatolithon purpureum",145203
+"1674","phymatolithon rugulosum",157333
+"1675","nemaliophycidae",368690
+"1676","acrochaetium parvulum",144377
+"1677","acrochaetium secundatum",144387
+"1678","batrachospermum gelatinosum",503081
+"1679","colaconema daviesii",164103
+"1680","nemalion multifidum",156261
+"1681","palmaria palmata",145771
+"1682","rhodophysema kjellmanii",624228
+"1683","rhodophysema lundii",1356591
+"1684","rhodothamniella floridula",145777
+"1685","bonnemaisonia hamifera",144442
+"1686","aglaothamnion sepositum",NA
+"1687","callithamnion tetragonum",144529
+"1688","ceramium pallidum",144555
+"1689","ceramium secundatum",144562
+"1690","ceramium shuttleworthianum",144563
+"1691","ceramium virgatum",178915
+"1692","plumaria plumosa",144603
+"1693","ptilota gunneri",144686
+"1694","dasysiphonia japonica",836896
+"1695","delesseriaceae",143673
+"1696","delesseria sanguinea",144744
+"1697","membranoptera alata",144758
+"1698","nitophyllum punctatum",144770
+"1699","osmundea",143921
+"1700","osmundea oederi",377233
+"1701","leptosiphonia brodiei",1340377
+"1702","leptosiphonia fibrillosa",1339221
+"1703","polysiphonia elongata",553329
+"1704","vertebrata fucoides",637672
+"1705","vertebrata lanosa",475211
+"1706","vertebrata woodii",655923
+"1707","rhodomela confervoides",144854
+"1708","rhodomela lycopodioides",144855
+"1709","gelidium pulchellum",145588
+"1710","dilsea carnosa",145222
+"1711","dumontia contorta",145228
+"1712","chondrus crispus",145625
+"1713","metacallophyllis laciniata",1311357
+"1714","erythrodermis traillii",145655
+"1715","plocamium lyngbyanum",502848
+"1716","lomentaria articulata",145821
+"1717","levanderina fissa",840689
+"1718","philozoon",604432
+"1719","dinophysis",109462
+"1720","phalacroma rotundatum",156505
+"1721","amphidoma languida",729889
+"1722","alexandrium minutum",109711
+"1723","margalefidinium polykrikoides",990876
+"1724","nusuttodinium",836674
+"1725","nusuttodinium desymbiontum",NA
+"1726","kareniaceae",599664
+"1727","karenia",231788
+"1728","takayama acrotrocha",619839
+"1729","heterocapsa rotundata",110152
+"1730","heterocapsa triquetra",694010
+"1731","durinskia baltica",NA
+"1732","kryptoperidinium foliaceum",NA
+"1733","pfiesteria shumwayae",246599
+"1734","spiniferodinium galeiforme",573781
+"1735","prorocentrum lima",110301
+"1736","prorocentrum minimum",NA
+"1737","polarella glacialis",232248
+"1738","nitzschia frustulum",175404
+"1739","phaeodactylum tricornutum",NA
+"1740","rhizosolenia setigera",547544
+"1741","skeletonema",149073
+"1742","grammonema striatula",NA
+"1743","ditylum brightwellii",NA
+"1744","dictyocha speculum",553420
+"1745","microchloropsis salina",1359175
+"1746","aureococcus anophagefferens",375699
+"1747","cutleria multifida",145297
+"1748","dictyota dichotoma",145367
+"1749","acinetospora filamentosa",1369205
+"1750","hincksia hincksiae",145435
+"1751","pylaiella",157186
+"1752","pylaiella littoralis",157188
+"1753","acrothrix gracilis",144908
+"1754","chordaria flagelliformis",144910
+"1755","coilodesme japonica",371957
+"1756","dictyosiphon ekmanii",145321
+"1757","dictyosiphon foeniculaceus",145322
+"1758","eudesme borealis",1535277
+"1759","eudesme virescens",144918
+"1760","hecatonema",144078
+"1761","hecatonema maculans",554712
+"1762","laminariocolax aecidioides",162814
+"1763","laminariocolax tomentosoides",145446
+"1764","laminarionema elsbetiae",371106
+"1765","leathesia",143973
+"1766","leathesia marina",494940
+"1767","mesogloia vermiculata",144924
+"1768","microspongium",143978
+"1769","microspongium alariae",376211
+"1770","microspongium globosum",144973
+"1771","microspongium tenuissimum",NA
+"1772","myrionema strangulans",144985
+"1773","myriotrichia claviformis",NA
+"1774","phaeostroma pustulosum",145455
+"1775","punctaria latifolia",145346
+"1776","stictyosiphon tortilis",145355
+"1777","ectocarpus crouaniorum",496828
+"1778","ectocarpus fasciculatus",145404
+"1779","ectocarpus siliculosus",145410
+"1780","spongonema tomentosum",145459
+"1781","scytosiphonaceae",143777
+"1782","colpomenia peregrina",145856
+"1783","petalonia fascia",145863
+"1784","petalonia filiformis",NA
+"1785","planosiphon gracilis",1360916
+"1786","scytosiphon",144259
+"1787","ascophyllum nodosum",145541
+"1788","fucus",144129
+"1789","fucus serratus",145546
+"1790","himanthalia elongata",145551
+"1791","halidrys siliquosa",145540
+"1792","alaria",144194
+"1793","laminaria",144199
+"1794","laminaria hyperborea",145725
+"1795","nuchella vesicularis",NA
+"1796","sphacelaria cirrosa",145892
+"1797","saccorhiza polyschides",145735
+"1798","anisolpidium ectocarpii",177852
+"1799","anisolpidium rosenvingei",172252
+"1800","lagenidiaceae",172188
+"1801","peronospora aparines",NA
+"1802","peronospora rumicis",NA
+"1803","chloroparvula pacifica",1361158
+"1804","trebouxia aggregata",615536
+"1805","micromonas pusilla",134564
+"1806","pycnococcus provasolii",376073
+"1807","vexillifera abyssalis",NA
+"1808","hemiselmis andersenii",623449
+"1809","leucocryptos marina",119077
+"1810","rhodomonas salina",106316
+"1811","phaeocystis pouchetii",115106
+"1812","cladosporium cladosporioides",1415554
+"1813","penicillium sclerotiorum",1487061
+"1814","acremonium fuci",437997
+"1815","tolypocladium cylindrosporum",NA
+"1816","melampsora",NA
+"1817","dicentrarchus labrax",126975
+"1818","hyperoplus immaculatus",126755
+"1819","pomatoschistus pictus",126930
+"1820","atherina presbyter",272030
+"1821","coryphoblennius galerita",126762
+"1822","parablennius gattorugine",126770
+"1823","apletodon dentatus",126510
+"1824","lepadogaster purpurea",126519
+"1825","mugilidae",125546
+"1826","entelurus aequoreus",127379
+"1827","gallus",1463739
+"1828","puffinus puffinus",137203
+"1829","botrylloides violaceus",148715
+"1830","asterina gibbosa",123987
+"1831","asterina phylactica",123990
+"1832","echinocyamus pusillus",124273
+"1833","podon intermedius",106276
+"1834","acartia margalefi",NA
+"1835","acartia tonsa",362901
+"1836","centropages typicus",104499
+"1837","paracalanus parvus",363596
+"1838","oithona nana",106651
+"1839","filexilia brevipes",115541
+"1840","euterpina acutifrons",116162
+"1841","oncaea",128690
+"1842","pilumnus hirtellus",107418
+"1843","portunoidea",106702
+"1844","xanthidae",106769
+"1845","palaemon elegans",107614
+"1846","palaemon serratus",107616
+"1847","caprella penantis",101846
+"1848","monocorophium insidiosum",148592
+"1849","pectenogammarus planicrurus",102308
+"1850","abludomelita obtusata",102788
+"1851","dynamene bidentata",256988
+"1852","perforatus perforatus",535477
+"1853","austrominius modestus",712167
+"1854","oscinella nigerrima",NA
+"1855","dilophus febrilis",NA
+"1856","mycetophila lunata",NA
+"1857","culex pipiens",1629456
+"1858","auchenorrhyncha",503316
+"1859","appasus major",NA
+"1860","thrips tabaci",989567
+"1861","fujientomon dicestum",NA
+"1862","marphysa sanguinea",130075
+"1863","nereididae",22496
+"1864","platynereis dumerilii",130417
+"1865","eulalia segmented",NA
+"1866","phyllodoce laminosa",130670
+"1867","lepidonotus clava",130800
+"1868","polynoe scolopendrina",130830
+"1869","sabellaria spinulosa",130867
+"1870","polydora cornuta",131143
+"1871","polydora hoplura",131146
+"1872","eupolymnia",129693
+"1873","bugulidae",110731
+"1874","scrupocellaria scruposa",111250
+"1875","amathia lendigera",111659
+"1876","vesicularia spinosa",111669
+"1877","neodasys chaetonotoideus",114550
+"1878","laevicardium crassum",139004
+"1879","donax vittatus",139604
+"1880","abra nitida",141435
+"1881","spisula subtruncata",140302
+"1882","ruditapes philippinarum",231750
+"1883","nucula nitidosa",140589
+"1884","afrolittorina knysnaensis",446837
+"1885","oncomelania hupensis",740259
+"1886","facelina auriculata",153375
+"1887","goniodoris",NA
+"1888","runcina coronata",141411
+"1889","patella depressa",151374
+"1890","gibbula magus",141790
+"1891","phorcus lineatus",689176
+"1892","acanthochitona crinita",138675
+"1893","siphonenteron bilineatum",177726
+"1894","golfingia vulgaris",NA
+"1895","nephasoma rimicola",NA
+"1896","sagartiidae",100681
+"1897","cervera atlantica",125422
+"1898","candelabrum cocksii",117417
+"1899","cladonema pacificum",284446
+"1900","bougainvillia muscus",117328
+"1901","rhizorhagium arenosum",231681
+"1902","turritopsis nutricula",117440
+"1903","amphinema dinema",117778
+"1904","leuckartiara nobilis",117790
+"1905","halopteris diaphana",117632
+"1906","kirchenpaueria pinnata",117674
+"1907","plumularia setacea",117824
+"1908","gonionemus vertens",117768
+"1909","rhizostoma octopus",152203
+"1910","chrysaora hysoscella",135304
+"1911","aurelia solida",287214
+"1912","calvadosia campanulata",886183
+"1913","haliclystus tenuis",287231
+"1914","pione vastifica",157411
+"1915","callyspongia vaginalis",NA
+"1916","gelliodes wilsoni",820772
+"1917","ophlitaspongia papilla",184428
+"1918","mycale cecilia",NA
+"1919","halichondria halichondria",NA
+"1920","protosuberites denhartogi",170782
+"1921","protosuberites mereui",890847
+"1922","boreophyllum",593555
+"1923","porphyra purpurea",144434
+"1924","florideophyceae",368670
+"1925","lithophyllum hibernicum",145151
+"1926","titanoderma macrocarpum",NA
+"1927","acrochaetium humile",144356
+"1928","acrochaetium luxurians",547853
+"1929","scinaia forcellata",NA
+"1930","ceramium ciliatum",144537
+"1931","ceramium echionotum",144547
+"1932","griffithsia corallinoides",144582
+"1933","acrosorium ciliolatum",295874
+"1934","apoglossum ruscifolium",144737
+"1935","melanothamnus harveyi",1027787
+"1936","polysiphonia fibrata",NA
+"1937","gelidium pusillum",145590
+"1938","catenella caespitosa",145605
+"1939","gymnogongrus crenulatus",145656
+"1940","gymnogongrus griffithsiae",145657
+"1941","phyllophorella peruviana",1311146
+"1942","gracilariopsis longissima",146960
+"1943","plocamium maggsiae",376838
+"1944","rhodymenia delicatula",145852
+"1945","prorocentrum fukuyoi",624457
+"1946","prorocentrum triestinum",110316
+"1947","symbiodiniaceae",109445
+"1948","thoracosphaera heimii",110277
+"1949","chlorarachnion reptans",376147
+"1950","cafileria marina",NA
+"1951","nitzschia putrida",624445
+"1952","coscinodiscophyceae",NA
+"1953","coscinodiscus granii",149271
+"1954","stephanopyxis turris",149631
+"1955","paralia sulcata",149055
+"1956","skeletonema dohrnii",NA
+"1957","skeletonema menzelii",NA
+"1958","thalassiosira nordenskioeldii",148931
+"1959","thalassionema nitzschioides",149093
+"1960","psammoneis japonica",NA
+"1961","pelagomonas calceolata",345504
+"1962","taonia atomaria",145393
+"1963","feldmannia mitchelliae",699648
+"1964","punctaria plantaginea",145347
+"1965","planosiphon nakamurae",NA
+"1966","fucales",844
+"1967","sargassaceae",143725
+"1968","heterosigma akashiwo",160585
+"1969","bremia sonchicola",NA
+"1970","salisapilia sapeloensis",NA
+"1971","chloropicon roscoffensis",1361153
+"1972","ulva compressa",234462
+"1973","plantago major",1492339
+"1974","geotrichum candidum",NA
+"1975","ischyrocerus anguipes",102412
+"1976","teleopsis dalmanni",NA
+"1977","rhopalosiphum padi",990742
+"1978","littorina obtusata",140263
+"1979","dasyaceae",143672
+"1980","ovalopodium rosalinum",NA
+"1981","naegleria fultoni",NA
+"1982","zymoseptoria tritici",NA
+"1983","rhodotorula mucilaginosa",987149
+"1984","gobiusculus flavescens",NA
+"1985","nerophis lumbriciformis",127383
+"1986","sardina pilchardus",126421
+"1987","arenaria interpres",147431
+"1988","phalacrocorax aristotelis",NA
+"1989","xenopus tropicalis",NA
+"1990","xenopus laevis",1476278
+"1991","ascidia ahodori",249965
+"1992","acrocnida brachiata",236130
+"1993","heliocidaris crassispina",513312
+"1994","erigone atra",NA
+"1995","achelia hispida",NA
+"1996","endeis spinosa",134674
+"1997","paracalanus",104196
+"1998","enhydrosoma propinquum",115787
+"1999","harpacticus flexus",116168
+"2000","tigriopus brevicornis",116183
+"2001","haloschizopera pygmaea",115950
+"2002","ditrichocorycaeus anglicus",128805
+"2003","oncaea waldemari",360846
+"2004","polybiidae",557512
+"2005","monodaeus couchii",241154
+"2006","xantho hydrophilus",107440
+"2007","dexamine spinosa",102135
+"2008","caprella acanthifera",101822
+"2009","phtisica marina",101864
+"2010","parajassa pelagica",102440
+"2011","aora gracilis",102012
+"2012","microdeutopus chelifer",102046
+"2013","microdeutopus stationis",102052
+"2014","corophium volutator",102101
+"2015","elasmopus rapax",102805
+"2016","gammarella fucicola",102811
+"2017","melita palmata",102843
+"2018","apohyale perieri",236509
+"2019","asellus aquaticus",NA
+"2020","athelges paguri",118196
+"2021","eristalinus aeneus",151119
+"2022","orygma luctuosum",151081
+"2023","chironomus riparius",NA
+"2024","myrmecina graminicola",NA
+"2025","philodina citrina",1795998
+"2026","philodina roseola",247966
+"2027","rotaria rotatoria",431954
+"2028","amphichaeta sannio",137477
+"2029","nais barbata",1015301
+"2030","nais communis",137480
+"2031","nais elinguis",137481
+"2032","paranais litoralis",137485
+"2033","lysidice ninetta",130071
+"2034","glycera alba",130116
+"2035","glycera tridactyla",130130
+"2036","alitta virens",234851
+"2037","eumida maia",564486
+"2038","proceraea",129671
+"2039","syllis gracilis",131435
+"2040","trypanosyllis zebra",131467
+"2041","dinophilus taeniatus",130001
+"2042","protodrilus adhaerens",NA
+"2043","protodrilus ciliatus",130843
+"2044","magelona johnstoni",130269
+"2045","poecilochaetus serpens",130711
+"2046","boccardia polybranchia",131111
+"2047","trichobranchus glacialis",131574
+"2048","chaetopterus variopedatus",129914
+"2049","proscoloplos cygnochaetus",329921
+"2050","aricidea minuta",NA
+"2051","bicellariella ciliata",111147
+"2052","amathia citrina",851584
+"2053","amathia pustulosa",851599
+"2054","lasaea adansoni",178911
+"2055","asbjornsenia pygmaea",879714
+"2056","pusillina inconspicua",141334
+"2057","vitreolina antiflexa",139896
+"2058","doto coronata",139631
+"2059","doto koenneckeri",139644
+"2060","hancockia uncinata",140081
+"2061","capellinia doriae",729926
+"2062","deroceras invadens",988052
+"2063","tetrastemma flavidum",122773
+"2064","tenuilineus albocinctus",122573
+"2065","microstomum septentrionale",142799
+"2066","zanclea giancarloi",231662
+"2067","aglaophenia",116999
+"2068","aglaophenia pluma",117283
+"2069","halecium",117103
+"2070","antennella secundaria",117628
+"2071","laodicea undulata",117725
+"2072","nemertesia ramosa",117815
+"2073","physalia physalis",135479
+"2074","calvadosia cruxmelitensis",886195
+"2075","depastromorpha africana",289801
+"2076","cliona",132026
+"2077","jania rubens",145130
+"2078","phymatolithon atlanticum",1732685
+"2079","mesophyllum lichenoides",145188
+"2080","acrochaetium moniliforme",144372
+"2081","neoizziella asiatica",625011
+"2082","nemalion elminthoides",145765
+"2083","naccaria wiggii",145769
+"2084","callithamnion tetricum",144530
+"2085","pterothamnion crispum",144682
+"2086","boergeseniella fruticulosa",NA
+"2087","lophosiphonia reptabunda",NA
+"2088","vertebrata byssoides",631828
+"2089","vertebrata thuyoides",668195
+"2090","pterosiphonia complanata",146368
+"2091","pterocladiaceae",368765
+"2092","calliblepharis jubata",145614
+"2093","halarachnion ligulatum",145621
+"2094","chondracanthus acicularis",145623
+"2095","peyssonnelia atropurpurea",145274
+"2096","ahnfeltiopsis devoniensis",145651
+"2097","grateloupia filicina",145248
+"2098","grateloupia turuturu",295880
+"2099","gastroclonium ovatum",145810
+"2100","gastroclonium reflexum",145811
+"2101","lomentaria clavellosa",145825
+"2102","protodinium simplex",663583
+"2103","cladocopium infistulum",1699472
+"2104","symbiodinium goreaui",620413
+"2105","nitzschia palea",149601
+"2106","asterionellopsis lenisilicea",NA
+"2107","eucampia zodiacus",NA
+"2108","hincksia granulosa",145433
+"2109","stilophora tenella",145009
+"2110","bifurcaria bifurcata",145503
+"2111","gongolaria baccata",1659019
+"2112","cladostephus spongiosus",145888
+"2113","articulospora tetracladia",NA
+"2114","tetracladium marchalianum",100553
+"2115","colletotrichum salicis",NA
+"2116","trichoderma",100248
+"2117","trisopterus luscus",126445
+"2118","salmo",126141
+"2119","alca torda",137128
+"2120","rissa tridactyla",137156
+"2121","columba oenas",558545
+"2122","bufo bufo",1350162
+"2123","forelia variegator",NA
+"2124","evadne nordmanni",106273
+"2125","amphiascopsis cinctus",115906
+"2126","pagurus bernhardus",107232
+"2127","homarus gammarus",107253
+"2128","liocarcinus depurator",NA
+"2129","senticaudata",719424
+"2130","gammarellus angulosus",102251
+"2131","gammarus pulex",234074
+"2132","idotea chelipes",119042
+"2133","cypridopsis vidua",160026
+"2134","isotoma anglicana",NA
+"2135","apion frumentarium",NA
+"2136","canace nasica",151117
+"2137","hyperlasion wasmanni",NA
+"2138","paratendipes albimanus",NA
+"2139","micropsectra",NA
+"2140","tanytarsus brundini",NA
+"2141","tanytarsus eminulus",NA
+"2142","corynoneura",NA
+"2143","cricotopus bicinctus",NA
+"2144","molophilus",NA
+"2145","lasius niger",1490360
+"2146","marchalina hellenica",NA
+"2147","leuctra",NA
+"2148","baetis rhodani",1714220
+"2149","polyarthra vulgaris",135044
+"2150","nais bretscheri",1015302
+"2151","limnodrilus hoffmeisteri",137556
+"2152","microphthalmus similis",130176
+"2153","nephtys cirrosa",130357
+"2154","nephtys hombergii",130359
+"2155","eulalia ornata",130632
+"2156","myrianida edwarsi",238194
+"2157","parvicardium pinnulatum",181343
+"2158","sphaerium corneum",181564
+"2159","modiolus modiolus",140467
+"2160","lacuna vincta",140170
+"2161","peringia ulvae",151628
+"2162","goniodoris nodosa",NA
+"2163","limacia clavigera",140830
+"2164","jorunna tomentosa",140166
+"2165","berthella plumula",140812
+"2166","arion",818149
+"2167","arion hortensis",819962
+"2168","lymnaeidae",160343
+"2169","patella ulyssiponensis",140684
+"2170","hydra oligactis",290145
+"2171","tubularia indivisa",117994
+"2172","eutonina indicans",117517
+"2173","mitrocomella brownei",117754
+"2174","haliclona oculata",NA
+"2175","isodictya elastica",168455
+"2176","spongillidae",167108
+"2177","hemiasterellidae",131670
+"2178","lithothamnion erinaceum",NA
+"2179","audouinella hermannii",162880
+"2180","virescentia helminthosa",1367561
+"2181","thorea hispida",610185
+"2182","peyssonnelia dubyi",145278
+"2183","dinophysis acuta",109604
+"2184","melosira varians",149043
+"2185","cyclostephanos invisitatus",NA
+"2186","pylaiella washingtoniensis",373984
+"2187","myriogloea simplex",371903
+"2188","striaria attenuata",548021
+"2189","lagena radicicola",NA
+"2190","bremia tulasnei",NA
+"2191","nothophytophthora chlamydospora",NA
+"2192","loa loa",NA
+"2193","polycera quadrilineata",140838
+"2194","suberites diversicolor",423967
+"2195","oscarella lobularis",133928
+"2196","acrochaetium plumosum",372088
+"2197","biddulphia alternans",NA
+"2198","papenfussiella kuromo",144928
+"2199","petalonia tenella",1356721
