@@ -24,7 +24,17 @@ list.of.packages <- c("dplyr",
                       "worrms",
                       "taxize",
                       "tibble", 
-                      "taxadb")
+                      "taxadb",
+                      "reshape2",
+                      "decontam",
+                      "microViz",
+                      "cowplot",
+                      "devtools",
+                      "qiime2R", 
+                      "microbiome",
+                      "vegan",
+                      "ggforce",
+                      "ANCOMBC")
 
 new.packages <- list.of.packages[!(list.of.packages %in% installed.packages()[,"Package"])]
 if(length(new.packages)) install.packages(new.packages)
@@ -874,7 +884,7 @@ str(eDNA_long_data_final)
 
 ## Create phyloseq object
 
-We've now got a tidied long data set with lots of meta data. To aid further check and analyses, we can convert our long data into a phyloseq object.
+We've now got a tidied long data set with lots of meta data. To aid further check and analyses, we can convert our long data into a `phyloseq` object to be used in the `phyloseq` package.
 
 First, we need to document and remove any failed samples.
 
@@ -981,7 +991,7 @@ meta <- unique(subset(eDNA_long_data_removefailed, select = c("fieldID",
                                              "averageTemp"
 )))
 
-meta <- meta[order(meta$fullID),] #order alphabetically to match objects later
+meta <- meta[order(meta$fullID),] #order rows alphabetically
 rownames(meta) <-meta$fullID
 ```
 
@@ -995,22 +1005,1366 @@ phylo_samples <- sample_data(meta)
 
 ### Create otu_table()
 
-Since we are currently in long format, we need to recreate the ASV matrix with some data wrangling.
+Since our data are currently in long format, we need to recreate the ASV matrix through some data wrangling.
 
 ```{r}
-#| label: format-otu-table
+#| label: format-otu-table-long
 
 species_reads_long <- eDNA_long_data_removefailed %>%
-  select(valid_name, reads, fullID) %>%
-  mutate(across(c(valid_name, fullID), as.factor)) %>%
+  select(ASV, reads, fullID) %>%
+  mutate(across(c(ASV, fullID), as.factor)) %>%
   distinct()
 
-head(species_reads_long)
+str(species_reads_long)
+which(is.na(species_reads_long)) #check for NAs
 ```
+
+Turning our long data into a wide format takes a long time due to the size of the data.
+
+```{r}
+#| label: compile-otu-table-wide
+
+species_reads_wide <- species_reads_long %>% 
+  pivot_wider(names_from = fullID, 
+              values_from = reads, 
+              values_fill = list(reads = 0)) %>% 
+  as.data.frame()
+```
+
+A bit of formatting is needed for joining elements together later on. We can see that we have 6321 ASVs and 655 samples.
+
+```{r}
+#| label: format-otu-table-wide
+
+#order names alphabetically
+species_reads_wide<- species_reads_wide[order(species_reads_wide$ASV),] #order rows alphabetically
+species_reads_wide <- species_reads_wide[,order(colnames(species_reads_wide))] #order cols alphabetically
+
+#update row names to ASVs
+rownames(species_reads_wide) <- NULL
+species_reads_wide <- species_reads_wide %>% column_to_rownames(var="ASV")
+
+dim(species_reads_wide)
+```
+
+We can also repeat the last few steps but group by `valid_names` to get a taxa-level `otu_table` . In my further analyses, taxa-level detection are appropriate and so we will move forward using this `otu_table`.
+
+We can see that we have 1780 ASVs and 655 samples.
 
 ```{r}
 
-species_reads_wide <- species_reads_long %>% spread(fullID, reads, fill = 0)
-species_reads_wide<- species_reads_wide[order(species_reads_wide$valid_name),] #order alphabetically to match objects later
-species_reads_wide <- species_reads_wide %>% column_to_rownames(var="valid_name")
+#| label: format-otu-table-long-taxa
+
+species_reads_long_taxa <- eDNA_long_data_removefailed %>%
+  select(ASV, valid_name, reads, fullID) %>%
+  mutate(across(c(ASV, valid_name, fullID), as.factor)) %>%
+  distinct()
+
+species_reads_long_taxa_grouped <- species_reads_long_taxa %>% 
+  group_by(valid_name, fullID) %>% 
+  summarize(reads = sum(reads, na.rm = TRUE), .groups = "drop")
+
+species_reads_wide_taxa <- species_reads_long_taxa_grouped %>% 
+  pivot_wider(names_from = fullID, 
+              values_from = reads, 
+              values_fill = list(reads = 0)) %>% 
+  as.data.frame()
+
+#order names alphabetically
+species_reads_wide_taxa<- species_reads_wide_taxa[order(species_reads_wide_taxa$valid_name),] #order rows alphabetically
+species_reads_wide_taxa <- species_reads_wide_taxa[,order(colnames(species_reads_wide_taxa))] #order cols alphabetically
+
+#update row names to ASVs
+rownames(species_reads_wide_taxa) <- NULL
+species_reads_wide_taxa <- species_reads_wide_taxa %>% column_to_rownames(var="valid_name")
+
+dim(species_reads_wide_taxa)
 ```
+
+Now let's create our `otu_table` elements - one at a ASV level (in case we need it later on) and one at a taxa-level (which we'll use for compiling the `phyloseq` object).
+
+```{r}
+#| label: create-otu-table
+
+phylo_asv <- otu_table(species_reads_wide, taxa_are_rows=TRUE)
+phylo_asv_taxa <- otu_table(species_reads_wide_taxa, taxa_are_rows=TRUE)
+```
+
+It's useful to do some checks befor we compile our taxa-level `phyloseq` object to make sure everything aligns correctly. This is why we've performed the alphabetical ordering in the above steps.
+
+```{r}
+#| label: check-phyloseq-taxa
+
+# Check if colnames in asv object match meta rownames
+list1<- colnames(phylo_asv_taxa)
+list2 <- rownames(phylo_samples)
+which(list1 != list2) #should be NULL
+
+# Check if species names match in asv object and taxa object
+list1<- rownames(phylo_asv_taxa)
+list2 <- rownames(phylo_tax)
+which(list1 != list2) #should be NULL
+```
+
+```{r}
+#| label: compile-phyloseq
+
+phylo_eDNA <- phyloseq(phylo_asv_taxa, phylo_tax, phylo_samples)
+
+# Remove taxa wihout occurances from the data
+phylo_eDNA <- subset_taxa(phylo_eDNA, taxa_sums(phylo_eDNA) > 0)
+```
+
+Let's take a look at what the `phyloseq` object looks like.
+
+```{r}
+#| label: look-phyloseq
+
+head(sample_names(phylo_eDNA)) #check sample names
+head(rank_names(phylo_eDNA)) #check taxonomic information
+head(sample_variables(phylo_eDNA)) #check meta data 
+
+phylo_eDNA
+microbiome::summarize_phyloseq(phylo_eDNA) #full summary
+```
+
+## Decontamination
+
+### Visualizing contaminants
+
+Let's produce some figures to visualize potential contaminates present in our negative controls.
+
+We need to subset the negative control samples first.
+
+```{r}
+#| label: subset-negatives
+
+phylo_neg_controls = subset_samples(phylo_eDNA, sampleType == "field-control" | sampleType == "lab-negative-control") 
+
+# Clean out taxa/ASV columns that are no longer present.
+phylo_neg_controls <- prune_taxa(taxa_sums(phylo_neg_controls) > 0, phylo_neg_controls)
+```
+
+Let's check the distribution of taxa in the negative controls.
+
+```{r}
+#| label: abundance-negatives
+
+plot(sort(taxa_sums(phylo_neg_controls), TRUE), type="h")
+```
+
+It might be useful to view contaminates by primer. Let's look at 18S first.
+
+```{r}
+#| label: 18S-negatives-abundance
+
+phylo_neg_18S <- subset_samples(phylo_neg_controls, primer == "18S")
+
+(contam_18S_plot<- plot_bar(phylo_neg_18S, "fullID", fill = "phylum") +
+  facet_wrap(.~ primer)+
+  theme(legend.position = 'none'))
+```
+
+And now for CO1.
+
+```{r}
+#| label: CO1-negatives-abundance
+
+phylo_neg_CO1 <- subset_samples(phylo_neg_controls, primer == "CO1")
+
+(contam_CO1_plot<- plot_bar(phylo_neg_CO1, "fullID", fill = "phylum") +
+  facet_wrap(.~ primer) +
+  theme(legend.position = 'none'))
+```
+
+We can also find taxa that are shared among a certain number of negative controls. As an example, we check which taxa are present in more than five samples.
+
+```{r}
+#| label: negatives-shared
+
+controls_shared_taxa = filter_taxa(phylo_neg_controls, 
+                                   function(x) sum(x >= 1) == (5), TRUE)
+plot_bar(controls_shared_taxa, "fullID", fill = "valid_name")
+```
+
+We can also visualize our original PCR plates (if we have variables in our metadata which state the position of samples on the plates).
+
+First, calculate overall read depth across samples and this to our sample data.
+
+```{r}
+#| label: calculate-sample-depths
+
+#Calculate read depths
+sample_depths <- microbiome::readcount(phylo_eDNA)
+sample_depths_df <- as.data.frame(sample_depths)
+sample_depths_df <- tibble::rownames_to_column(sample_depths_df, "fullID")
+head(sample_depths_df)
+
+# add depths to sample data
+sample_data <- sample_data(phylo_eDNA)
+sample_data[,"depth"] <- sample_depths
+```
+
+Let's look at CO1 first.
+
+```{r}
+#| label: PCR-plate-CO1
+
+# Filter out NA values
+sample_data_CO1 <- sample_data[!is.na(sample_data$plate_row_CO1), ]
+
+# Reorder levels of plate_row_CO1
+sample_data_CO1$plate_row_CO1 <- factor(sample_data_CO1$plate_row_CO1, 
+                                        levels = rev(LETTERS[1:8]))
+
+# Relabel PCR plates
+sample_data_CO1$batch_PCR_CO1 <- recode(sample_data_CO1$batch_PCR_CO1,
+                                    "1" = "SW-CO1",
+                                    "2" = "SCH-CO1",
+                                    "3" = "SW-18S",
+                                    "4" = "SCH-18S",
+                                    "5" = "NW-18S",
+                                    "6" = "NE-18S",
+                                    "7" = "CN-18S",
+                                    "8" = "NW-CO1",
+                                    "9" = "NE-CO1",
+                                    "10" = "CN-CO1")
+
+# Plot with facet_wrap and circles representing concentrations - CO1 first
+pcr_plate_CO1 <- ggplot(sample_data_CO1, aes(x = plate_col_CO1, y = plate_row_CO1)) +
+  geom_tile(aes(fill = sampleType), color = "white", alpha = 0.7) +
+  geom_point(aes(size = depth), shape = 21, fill = "black", color = "black") + # Fill circles with black
+  scale_fill_manual(values = c("field-control" = "brown", 
+                               "lab-extraction-control" = "red",
+                               "lab-negative-control" = "pink", 
+                               "lab-positive-control" = "seagreen",
+                               "sample" ="white", 
+                               "plate-replicate" = "lightblue", 
+                               "failed-repeat" = "white", 
+                               "run-replicate" = "lightblue4")) + 
+  scale_size_continuous(range = c(2, 10)) +  # Adjust circle sizes as needed
+  labs(title = "Virtual PCR Plates",
+       x = NULL,
+       y = NULL,
+       fill = "Control Type",
+       size = "# of reads per sample") +
+  theme_bw() +
+  theme(legend.position = "right") + # Adjust legend position if needed
+  facet_wrap(~ batch_PCR_CO1, ncol = 2, scales = "free") + # Facet by plate variable, 2 plates per row
+  scale_x_continuous(breaks = 1:12)  # Discrete x-axis from 1 to 12
+
+pcr_plate_CO1
+```
+
+And now for 18S.
+
+```{r}
+#| label: PCR-plate-18S
+
+# Filter out NA values
+sample_data_18S <- sample_data[!is.na(sample_data$plate_row_18S), ]
+
+# Reorder levels of plate_row_18S
+sample_data_18S$plate_row_18S <- factor(sample_data_18S$plate_row_18S, levels = rev(LETTERS[1:8]))
+
+# Relabel PCR plates
+sample_data_18S$batch_PCR_18S <- recode(sample_data_18S$batch_PCR_18S,
+                                    "1" = "SW-CO1",
+                                    "2" = "SCH-CO1",
+                                    "3" = "SW-18S",
+                                    "4" = "SCH-18S",
+                                    "5" = "NW-18S",
+                                    "6" = "NE-18S",
+                                    "7" = "CN-18S",
+                                    "8" = "NW-CO1",
+                                    "9" = "NE-CO1",
+                                    "10" = "CN-CO1")
+
+# Plot with facet_wrap and circles representing concentrations - 18S first
+pcr_plate_18S <- ggplot(sample_data_18S, aes(x = plate_col_18S, y = plate_row_18S)) +
+  geom_tile(aes(fill = sampleType), color = "white", alpha = 0.7) +
+  geom_point(aes(size = depth), shape = 21, fill = "black", color = "black") + # Fill circles with black
+  scale_fill_manual(values = c("field-control" = "brown", 
+                               "lab-extraction-control" = "red",
+                               "lab-negative-control" = "pink", 
+                               "lab-positive-control" = "seagreen",
+                               "sample" ="white", 
+                               "plate-replicate" = "lightblue", 
+                               "failed-repeat" = "white", 
+                               "run-replicate" = "lightblue4")) + 
+  scale_size_continuous(range = c(2, 10)) +  # Adjust circle sizes as needed
+  labs(title = "Virtual PCR Plates",
+       x = NULL,
+       y = NULL,
+       fill = "Control Type",
+       size = "# of reads per sample") +
+  theme_bw() +
+  theme(legend.position = "right") + # Adjust legend position if needed
+  facet_wrap(~ batch_PCR_18S, ncol = 2, scales = "free") + # Facet by plate variable, 2 plates per row
+  scale_x_continuous(breaks = 1:12)  # Discrete x-axis from 1 to 12
+
+pcr_plate_18S
+```
+
+### Removing contaminants
+
+We can see from our plots we have some contamination. We deal with this next.
+
+There are multiple ways to deal with contamination. Here, we take the approach that if the abundance of a taxa in control sample is larger than abundance in main sample, it will be treated as contaminant and be removed.
+
+We'll remove taxa in stages: from sites (using the field controls), extraction batch (using the extraction controls) then PCR batch (using the PCR controls). This prevents unnecessary blanket removal across the whole data set.
+
+Let's set-up the site level decontamination function called `remove_field_control_taxa_abund` first.
+
+```{r}
+
+remove_field_control_taxa_abund <- function(phylo_object) {
+  
+  # Extract sample data
+  sample_data <- sample_data(phylo_object)
+  
+  # Get unique localityIDs
+  unique_localityIDs <- unique(sample_data$localityID[!is.na(sample_data$localityID)])
+  
+  # Check if unique_localityIDs is empty
+  if (length(unique_localityIDs) == 0) {
+    stop("No localityIDs found in sample data.")
+  }
+  
+  # Initialize variable to count OTUs removed
+  otus_removed <- data.frame(localityID = character(), OTU = character(), reads_removed = integer(), stringsAsFactors = FALSE)
+  
+  # Initialize filtered OTU table
+  otu_table_filtered <- otu_table(phylo_object)
+  
+  # Check if the OTU table is empty
+  if (dim(otu_table_filtered)[1] == 0 || dim(otu_table_filtered)[2] == 0) {
+    stop("OTU abundance data is empty.")
+  }
+  
+  print("Original dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Initialize list to store removed OTUs for each sample
+  otus_removed_reads <- data.frame()
+  otus_removed_reads_total <- data.frame()
+  
+  # Loop through each localityID
+  for (locality in unique_localityIDs) {
+    
+    # Get field control sample fullIDs for the current locality
+    field_control_samples <- unique(sample_data$fullID[sample_data$localityID == locality & grepl("-C_CO1$|-C_18S$", sample_data$fullID)])
+    
+    # If there are more than 2 field control samples for the current locality, print a message and skip
+    if (length(field_control_samples) > 2) {
+      cat("More than 1 field control samples found for site:", locality, "\n")
+      next
+    }
+    
+    # If there are no field control samples for the current locality, print a message and skip
+    if (length(field_control_samples) < 2) {
+      cat("No field control samples found for site:", locality, "\n")
+      next
+    }
+    
+    # Get indices of field control and samples
+    control_indices <- which(sample_data$fullID %in% field_control_samples)
+    sample_indices <- which(sample_data$localityID == locality & !sample_data$fullID %in% field_control_samples)
+    
+    # If no control indices found
+    if (length(control_indices) == 0) {
+      cat("No control indices found for site:", locality, "\n")
+      next
+    }
+    
+    # If no sample indices found
+    if (length(sample_indices) == 0) {
+      cat("No sample indices found for site:", locality, "\n")
+      next
+    }
+    
+    # Calculate mean abundance of each OTU in the control and samples
+    control_abundance <- rowMeans(otu_table_filtered[, control_indices])
+    sample_abundance <- rowMeans(otu_table_filtered[, sample_indices])
+    
+    # Identify potential contaminants based on higher abundance in control than samples
+    contaminants <- rownames(otu_table_filtered)[control_abundance > sample_abundance]
+    
+    if (length(contaminants) > 0) {
+      cat(length(contaminants), "contaminant taxa found for site:", locality, "\n")
+    } else {
+      cat("No contaminants found for site:", locality, "\n")
+      next
+    }
+    
+    #Get original number of reads in samples for taxa with above minReads reads in controls
+    #bind the previous output
+    if (length(otus_removed_reads) > 0) {
+      otus_removed_reads_total <- rbind(otus_removed_reads, otus_removed_reads_total)
+    }
+    
+    #get reads
+    otus_removed_reads <- otu_table_filtered[contaminants,  sample_indices] %>% reshape2::melt()
+    colnames(otus_removed_reads) <- c("taxa", "fullID", "reads_removed")
+    
+    # Set read count of OTUs in real samples to zero if reads in field control samples exceed 100
+    otu_table_filtered[contaminants, sample_indices] <- 0
+    
+  }
+  
+  # Print OTUs removed
+  cat("Reads removed:", sum(otus_removed_reads_total$reads_removed),"; Samples filtered:", length(unique(otus_removed_reads_total$fullID)), "\n")
+  
+  # Print new dimensions
+  print("New dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Remove controls from the dataset
+  control_samples<- sample_data$fullID[grepl("-C_CO1$|-C_18S$", sample_data$fullID)] # Build list of names of control samples
+  otu_table_filtered <- otu_table_filtered[, -which(colnames(otu_table_filtered) %in% control_samples)] # Remove control samples from otu_table
+  sample_data_filtered <- sample_data[!sample_data$fullID %in% control_samples, ] # Remove control samples from sample_data
+  
+  # Return the modified phyloseq object
+  modified_phylo <- phyloseq(otu_table_filtered, tax_table(phylo_object), sample_data_filtered)
+  
+  # Remove taxa with zero reads removed in otus_removed_reads_total
+  otus_removed_reads_total <- otus_removed_reads_total %>% subset(otus_removed_reads_total$reads_removed != 0)
+  
+  # Return the modified phyloseq object and otus_removed dataframe
+  return(list(modified_phylo, otus_removed_reads_total))
+}
+```
+
+Next, the function for extraction level decontamination called `remove_extract_control_taxa_abund`.
+
+```{r}
+
+remove_extract_control_taxa_abund <- function(phylo_object) {
+  
+  # Extract sample data
+  sample_data <- sample_data(phylo_object)
+  
+  # Get unique batches
+  unique_batches <- unique(sample_data$batch_extraction[!is.na(sample_data$batch_extraction)])
+  
+  # Check if unique_localityIDs is empty
+  if (length(unique_batches) == 0) {
+    stop("No DNA extraction batches found in sample data.")
+  }
+  
+  # Initialize variable to count OTUs removed
+  otus_removed <- data.frame(batch = character(), OTU = character(), reads_removed = integer(), stringsAsFactors = FALSE)
+  
+  # Initialize filtered OTU table
+  otu_table_filtered <- otu_table(phylo_object)
+  
+  # Check if the OTU table is empty
+  if (dim(otu_table_filtered)[1] == 0 || dim(otu_table_filtered)[2] == 0) {
+    stop("OTU abundance data is empty.")
+  }
+  
+  print("Original dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Initialize list to store removed OTUs for each sample
+  otus_removed_reads <- data.frame()
+  otus_removed_reads_total <- data.frame()
+  
+  # Loop through each localityID
+  for (batch in unique_batches) {
+    
+    # Get extract control sample for the current batch
+    dna_extract_control_samples <- unique(sub("_[^_]*$", "", sample_data$fullID[sample_data$sampleType == "lab-extraction-control" 
+                                                                                & sample_data$batch_extraction == batch]))
+    
+    # If there are more than 2 field control samples for the current locality, print a message and skip
+    if (length(dna_extract_control_samples) > 2) {
+      cat("More than 1 DNA extract control sample found in batch:", batch, "\n")
+      next
+    }
+    
+    # If there are no field control samples for the current locality, print a message and skip
+    if (length(dna_extract_control_samples) < 1) {
+      cat("No DNA extract control samples found in batch:", batch, "\n")
+      next
+    }
+    
+    # Get indices of dna extract control and samples
+    control_indices <- which(sample_data$fieldID %in% dna_extract_control_samples)
+    sample_indices <- which(sample_data$batch_extraction == batch & !sample_data$fullID %in% dna_extract_control_samples)
+    
+    # If no control indices found
+    if (length(control_indices) == 0) {
+      cat("No control indices found for batch:", batch, "\n")
+      next
+    }
+    
+    # If no sample indices found
+    if (length(sample_indices) == 0) {
+      cat("No sample indices found for batch:", batch, "\n")
+      next
+    }
+    
+    # Calculate mean abundance of each OTU in the control and samples
+    control_abundance <- rowMeans(otu_table_filtered[, control_indices])
+    sample_abundance <- rowMeans(otu_table_filtered[, sample_indices])
+    
+    # Identify potential contaminants based on higher abundance in control than samples
+    contaminants <- rownames(otu_table_filtered)[control_abundance > sample_abundance]
+    
+    if (length(contaminants) > 0) {
+      cat(length(contaminants), "contaminant taxa found for site:", batch, "\n")
+    } else {
+      cat("No contaminants found for site:", batch, "\n")
+      next
+    }
+    
+    #Get original number of reads in samples for taxa with above minReads reads in controls
+    #bind the previous output
+    if (length(otus_removed_reads) > 0) {
+      otus_removed_reads_total <- rbind(otus_removed_reads, otus_removed_reads_total)
+    }
+    
+    #get reads
+    otus_removed_reads <- otu_table_filtered[contaminants,  sample_indices] %>% reshape2::melt()
+    colnames(otus_removed_reads) <- c("taxa", "fullID", "reads_removed")
+    
+    # Set read count of OTUs in real samples to zero if reads in field control samples exceed 100
+    otu_table_filtered[contaminants, sample_indices] <- 0
+    
+    # Remove the control samples from the phylo object
+    otu_table_filtered <- otu_table_filtered[-control_indices]
+    
+  }
+  
+  # Print OTUs removed
+  cat("Reads removed:", sum(otus_removed_reads_total$reads_removed),"; Samples filtered:", length(unique(otus_removed_reads_total$fullID)), "\n")
+  
+  # Remove controls from the dataset
+  control_samples <- unique(sub("_[^_]*$", "", sample_data$fullID[sample_data$sampleType == "lab-extraction-control"])) # Build list of names of control samples
+  control_samples <- c(paste0(control_samples, "_CO1"), paste0(control_samples, "_18S"))  # Create a list of control samples by appending "_CO1" and "_18S" to each ID
+  otu_table_filtered <- otu_table_filtered[, -which(colnames(otu_table_filtered) %in% control_samples)] # Remove control samples from otu_table
+  sample_data_filtered <- sample_data[!sample_data$fullID %in% control_samples, ] # Remove control samples from sample_data
+  
+  # Print new dimensions
+  print("New dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Return the modified phyloseq object
+  modified_phylo <- phyloseq(otu_table_filtered, tax_table(phylo_object), sample_data_filtered)
+  
+  # Remove taxa with zero reads removed in otus_removed_reads_total
+  otus_removed_reads_total <- otus_removed_reads_total %>% subset(otus_removed_reads_total$reads_removed != 0)
+  
+  # Return the modified phyloseq object and otus_removed data frame
+  return(list(modified_phylo, otus_removed_reads_total))
+}
+```
+
+And finally, the function for PCR level decontamination. We have to do this by marker, considering the PCRs are different for each.
+
+The 18S function is called `remove_PCR_control_taxa_18S_abund`.
+
+```{r}
+
+remove_PCR_control_taxa_18S_abund <- function(phylo_object) {
+  
+  # Extract sample data
+  sample_data <- sample_data(phylo_object)
+  
+  # Get unique batches
+  unique_batches <- unique(sample_data$batch_PCR_18S[!is.na(sample_data$batch_PCR_18S)])
+  
+  # Check if unique_localityIDs is empty
+  if (length(unique_batches) == 0) {
+    stop("No PCR (18S) batches found in sample data.")
+  }
+  
+  # Initialize variable to count OTUs removed
+  otus_removed <- data.frame(batch = character(), OTU = character(), reads_removed = integer(), stringsAsFactors = FALSE)
+  
+  # Initialize filtered OTU table
+  otu_table_filtered <- otu_table(phylo_object)
+  
+  # Check if the OTU table is empty
+  if (dim(otu_table_filtered)[1] == 0 || dim(otu_table_filtered)[2] == 0) {
+    stop("OTU abundance data is empty.")
+  }
+  
+  print("Original dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Initialize list to store removed OTUs for each sample
+  otus_removed_reads <- data.frame()
+  otus_removed_reads_total <- data.frame()
+  
+  # Loop through each batch_PCR_18S
+  for (batch in unique_batches) {
+    
+    # Get extract control samples for the current batch
+    pcr_18S_control_samples <- unique(sub("_[^_]*$", "", sample_data$fullID[sample_data$sampleType == "lab-negative-control" 
+                                                                            & sample_data$batch_PCR_18S == batch]))
+    pcr_18S_control_samples <- na.omit(pcr_18S_control_samples)
+    
+    # If there are no PCR 18S control samples for the current batch, print a message and skip
+    if (length(pcr_18S_control_samples) < 1) {
+      cat("No PCR (18S) control samples found in batch:", batch, "\n")
+      next
+    }
+    
+    # Get indices of PCR (18S) control and samples
+    control_indices <- which(sample_data$fieldID %in% pcr_18S_control_samples)
+    sample_indices <- which(sample_data$batch_PCR_18S == batch & !sample_data$fullID %in% pcr_18S_control_samples)
+    
+    # If no control indices found
+    if (length(control_indices) == 0) {
+      cat("No control indices found for batch:", batch, "\n")
+      next
+    }
+    
+    # If no sample indices found
+    if (length(sample_indices) == 0) {
+      cat("No sample indices found for batch:", batch, "\n")
+      next
+    }
+    
+    # If there are more than PCR 18S control samples for the current locality, loop through the controls
+    if (length(pcr_18S_control_samples) > 2) {
+      cat("More than 1 PCR (18S) control sample found in batch", batch, ". Now printing individual controls:", "\n")
+      
+      for (control in control_indices) {
+        
+        # Calculate mean abundance of each OTU in the control and samples
+        control_abundance <- rowMeans(otu_table_filtered[, control])
+        sample_abundance <- rowMeans(otu_table_filtered[, sample_indices])
+        
+        #check there are OTUs with reads above minReads in the field control samples
+        control_sum_above_minReads <- rowSums(otu_table_filtered[, control]) > 100
+        
+        if (any(control_sum_above_minReads)) {
+          contaminants <- rownames(otu_table_filtered[control_abundance > sample_abundance])
+          cat("Batch", batch, ":", sum(control_sum_above_minReads == T), "contaminant taxa found for control indices", control, "\n")
+        } else {
+          cat("Batch", batch, ": No contaminants found for control indices", control, "\n")
+          next
+        }
+        
+        #Get original number of reads in samples for taxa with above minReads reads in controls
+        #bind the previous output
+        if (length(otus_removed_reads) > 0) {
+          otus_removed_reads_total <- rbind(otus_removed_reads, otus_removed_reads_total)
+        }
+        
+        #get reads
+        otus_removed_reads <- otu_table_filtered[contaminants,  sample_indices] %>% reshape2::melt()
+        colnames(otus_removed_reads) <- c("taxa", "fullID", "reads_removed")
+        
+        # Set read count of OTUs in real samples to zero if reads in field control samples exceed 100
+        otu_table_filtered[contaminants, sample_indices] <- 0
+        
+        # Remove the control samples from the phylo object
+        otu_table_filtered <- otu_table_filtered[-control]
+      }
+    } else {
+      
+      #check there are OTUs with reads above minReads in the field control samples
+      control_sum_above_minReads <- rowSums(otu_table_filtered[, control_indices]) > minReads
+      
+      if (any(control_sum_above_minReads)) {
+        contaminants <- rownames(otu_table_filtered[rowSums(otu_table_filtered[, control_indices]) > minReads])
+        cat(sum(control_sum_above_minReads == T), "contaminant taxa found for batch", batch, "\n")
+      } else {
+        cat("No contaminants found for batch", batch, "\n")
+        next
+      }
+      
+      #Get original number of reads in samples for taxa with above minReads reads in controls
+      #bind the previous output
+      if (length(otus_removed_reads) > 0) {
+        otus_removed_reads_total <- rbind(otus_removed_reads, otus_removed_reads_total)
+      }
+      
+      #get reads
+      otus_removed_reads <- otu_table_filtered[contaminants,  sample_indices] %>% reshape2::melt()
+      colnames(otus_removed_reads) <- c("taxa", "fullID", "reads_removed")
+      
+      # Set read count of OTUs in real samples to zero if reads in field control samples exceed 100
+      otu_table_filtered[contaminants, sample_indices] <- 0
+      
+      # Remove the control samples from the phylo object
+      otu_table_filtered <- otu_table_filtered[-control_indices]
+    }
+  }
+  
+  # Print OTUs removed
+  cat("Reads removed:", sum(otus_removed_reads_total$reads_removed),"; Samples filtered:", length(unique(otus_removed_reads_total$fullID)), "\n")
+  
+  # Get list of control samples
+  control_samples <- unique(sub("_[^_]*$", "", sample_data$fullID[sample_data$sampleType == "lab-negative-control"])) # Build list of names of control samples
+  control_samples <- c(paste0(control_samples, "_18S")) # Create a list of control samples by appending "_CO1" to each ID
+  
+  # Check control samples to filtered otu table (will be more in the list than reality because some aren't _CO1)
+  print(control_samples)
+  print(which(control_samples %in% colnames(otu_table_filtered)))
+  
+  # Remove control samples from otu and sample table
+  otu_table_filtered <- otu_table_filtered[, -which(colnames(otu_table_filtered) %in% control_samples)] # Remove control samples from otu_table
+  sample_data_filtered <- sample_data[!sample_data$fullID %in% control_samples, ] # Remove control samples from sample_data
+  
+  # Print new dimensions
+  print("New dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Return the modified phyloseq object
+  modified_phylo <- phyloseq(otu_table_filtered, tax_table(phylo_object), sample_data_filtered)
+  
+  # Remove taxa with zero reads removed in otus_removed_reads_total
+  otus_removed_reads_total <- otus_removed_reads_total %>% subset(otus_removed_reads_total$reads_removed != 0)
+  
+  # Return the modified phyloseq object and otus_removed dataframe
+  return(list(modified_phylo, otus_removed_reads_total))
+}
+
+```
+
+And the CO1 function is called `remove_PCR_control_taxa_CO1_abund`.
+
+```{r}
+### PCR negative decontamination (CO1)
+remove_PCR_control_taxa_CO1_abund <- function(phylo_object) {
+  
+  # Extract sample data
+  sample_data <- sample_data(phylo_object)
+  
+  # Get unique batches
+  unique_batches <- unique(sample_data$batch_PCR_CO1[!is.na(sample_data$batch_PCR_CO1)])
+  
+  # Check if unique_localityIDs is empty
+  if (length(unique_batches) == 0) {
+    stop("No PCR (CO1) batches found in sample data.")
+  }
+  
+  # Initialize variable to count OTUs removed
+  otus_removed <- data.frame(batch = character(), OTU = character(), reads_removed = integer(), stringsAsFactors = FALSE)
+  
+  # Initialize filtered OTU table
+  otu_table_filtered <- otu_table(phylo_object)
+  
+  # Check if the OTU table is empty
+  if (dim(otu_table_filtered)[1] == 0 || dim(otu_table_filtered)[2] == 0) {
+    stop("OTU abundance data is empty.")
+  }
+  
+  print("Original dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Initialize list to store removed OTUs for each sample
+  otus_removed_reads <- data.frame()
+  otus_removed_reads_total <- data.frame()
+  
+  # Loop through each batch_PCR_CO1
+  for (batch in unique_batches) {
+    
+    # Get extract control samples for the current batch
+    pcr_CO1_control_samples <- unique(sub("_[^_]*$", "", sample_data$fullID[sample_data$sampleType == "lab-negative-control" 
+                                                                            & sample_data$batch_PCR_CO1 == batch]))
+    pcr_CO1_control_samples <- na.omit(pcr_CO1_control_samples)
+    
+    # If there are no PCR CO1 control samples for the current batch, print a message and skip
+    if (length(pcr_CO1_control_samples) < 1) {
+      cat("No PCR (CO1) control samples found in batch:", batch, "\n")
+      next
+    }
+    
+    # Get indices of PCR (CO1) control and samples
+    control_indices <- which(sample_data$fieldID %in% pcr_CO1_control_samples)
+    sample_indices <- which(sample_data$batch_PCR_CO1 == batch & !sample_data$fullID %in% pcr_CO1_control_samples)
+    
+    # If no control indices found
+    if (length(control_indices) == 0) {
+      cat("No control indices found for batch:", batch, "\n")
+      next
+    }
+    
+    # If no sample indices found
+    if (length(sample_indices) == 0) {
+      cat("No sample indices found for batch:", batch, "\n")
+      next
+    }
+    
+    # If there are more than PCR CO1 control samples for the current locality, loop through the controls
+    if (length(pcr_CO1_control_samples) > 2) {
+      cat("More than 1 PCR (CO1) control sample found in batch", batch, ". Now printing individual controls:", "\n")
+      
+      for (control in control_indices) {
+        
+        # Calculate mean abundance of each OTU in the control and samples
+        control_abundance <- rowMeans(otu_table_filtered[, control])
+        sample_abundance <- rowMeans(otu_table_filtered[, sample_indices])
+        
+        #check there are OTUs with reads above minReads in the field control samples
+        control_sum_above_minReads <- rowSums(otu_table_filtered[, control]) > 100
+        
+        if (any(control_sum_above_minReads)) {
+          if (any(control_abundance > sample_abundance)) {
+            contaminants <- rownames(otu_table_filtered[control_abundance > sample_abundance])
+            cat("Batch", batch, ":", sum(control_sum_above_minReads == TRUE), "contaminant taxa found for control indices", control, "\n")
+          } else {
+            cat("Batch", batch, ": Control abundance is not greater than sample abundance. OTU table would be empty.\n")
+            next
+          }
+        } else {
+          cat("Batch", batch, ": No contaminants found for control indices", control, "\n")
+          next
+        }
+        
+        #Get original number of reads in samples for taxa with above minReads reads in controls
+        #bind the previous output
+        if (length(otus_removed_reads) > 0) {
+          otus_removed_reads_total <- rbind(otus_removed_reads, otus_removed_reads_total)
+        }
+        
+        #get reads
+        otus_removed_reads <- otu_table_filtered[contaminants,  sample_indices] %>% reshape2::melt()
+        colnames(otus_removed_reads) <- c("taxa", "fullID", "reads_removed")
+        
+        # Set read count of OTUs in real samples to zero if reads in field control samples exceed 100
+        otu_table_filtered[contaminants, sample_indices] <- 0
+        
+        # Remove the control samples from the phylo object
+        otu_table_filtered <- otu_table_filtered[-control]
+      }
+    } else {
+      
+      #check there are OTUs with reads above minReads in the field control samples
+      control_sum_above_minReads <- rowSums(otu_table_filtered[, control_indices]) > minReads
+      
+      if (any(control_sum_above_minReads)) {
+        contaminants <- rownames(otu_table_filtered[rowSums(otu_table_filtered[, control_indices]) > minReads])
+        cat(sum(control_sum_above_minReads == T), "contaminant taxa found for batch", batch, "\n")
+      } else {
+        cat("No contaminants found for batch", batch, "\n")
+        next
+      }
+      
+      #Get original number of reads in samples for taxa with above minReads reads in controls
+      #bind the previous output
+      if (length(otus_removed_reads) > 0) {
+        otus_removed_reads_total <- rbind(otus_removed_reads, otus_removed_reads_total)
+      }
+      
+      #get reads
+      otus_removed_reads <- otu_table_filtered[contaminants,  sample_indices] %>% reshape2::melt()
+      colnames(otus_removed_reads) <- c("taxa", "fullID", "reads_removed")
+      
+      # Set read count of OTUs in real samples to zero if reads in field control samples exceed 100
+      otu_table_filtered[contaminants, sample_indices] <- 0
+      
+      # Remove the control samples from the phylo object
+      otu_table_filtered <- otu_table_filtered[-control_indices]
+    }
+  }
+  
+  # Print OTUs removed
+  cat("Reads removed:", sum(otus_removed_reads_total$reads_removed),"; Samples filtered:", length(unique(otus_removed_reads_total$fullID)), "\n")
+  
+  # Get list of control samples
+  control_samples <- unique(sub("_[^_]*$", "", sample_data$fullID[sample_data$sampleType == "lab-negative-control"])) # Build list of names of control samples
+  control_samples <- c(paste0(control_samples, "_CO1")) # Create a list of control samples by appending "_CO1" to each ID
+  
+  # Check control samples to filtered otu table (will be more in the list than reality because some aren't _CO1)
+  print(control_samples)
+  print(which(control_samples %in% colnames(otu_table_filtered)))
+  
+  # Remove control samples from otu and sample table
+  otu_table_filtered <- otu_table_filtered[, -which(colnames(otu_table_filtered) %in% control_samples)] # Remove control samples from otu_table
+  sample_data_filtered <- sample_data[!sample_data$fullID %in% control_samples, ] # Remove control samples from sample_data
+  
+  # Print new dimensions
+  print("New dimensions of otu_table_filtered:")
+  print(dim(otu_table_filtered))
+  
+  # Return the modified phyloseq object
+  modified_phylo <- phyloseq(otu_table_filtered, tax_table(phylo_object), sample_data_filtered)
+  
+  # Remove taxa with zero reads removed in otus_removed_reads_total
+  otus_removed_reads_total <- otus_removed_reads_total %>% subset(otus_removed_reads_total$reads_removed != 0)
+  
+  # Return the modified phyloseq object and otus_removed data frame
+  return(list(modified_phylo, otus_removed_reads_total))
+}
+```
+
+Time to run the decontamination functions one after the other, using the output of the first as the input for the last.
+
+```{r}
+
+minReads = 100 #to identify a contaminant
+
+#Call remove_field_control_taxa_abund() function (site)
+result_field_abun <- remove_field_control_taxa_abund(phylo_eDNA)
+phylo_eDNA_filtered_field_abun <- result_field_abun[[1]]
+otus_removed_field_abun <- result_field_abun[[2]]
+
+#Call remove_extract_control_taxa_abund() function (extracts)
+result_extract_abun <- remove_extract_control_taxa_abund(phylo_eDNA_filtered_field_abun)
+phylo_eDNA_filtered_extract_abun <- result_extract_abun[[1]]
+otus_removed_extract_abun <- result_extract_abun[[2]]
+
+#Call remove_PCR_CO1_control_taxa_abund() function (PCR)
+result_PCR_CO1_abun <- remove_PCR_control_taxa_CO1_abund(phylo_eDNA_filtered_extract_abun)
+phylo_eDNA_filtered_PCR_CO1_abun <- result_PCR_CO1_abun[[1]]
+otus_removed_PCR_CO1_abun <- result_PCR_CO1_abun[[2]]
+
+#all remove_PCR_18S_control_taxa_abund() function (PCR)
+result_PCR_18S_abun <- remove_PCR_control_taxa_18S_abund(phylo_eDNA_filtered_PCR_CO1_abun)
+phylo_eDNA_filtered_PCR_18S_abun <- result_PCR_18S_abun[[1]]
+otus_removed_PCR_18S_abun <- result_PCR_18S_abun[[2]]
+
+# rename file data
+phylo_eDNA_decontam <- phylo_eDNA_filtered_PCR_18S_abun
+
+# remove taxa with no reads across all samples
+phylo_eDNA_decontam <- subset_taxa(phylo_eDNA_decontam, taxa_sums(phylo_eDNA_decontam) > 0)
+```
+
+Let's compared our decontaminated data with the original.
+
+We can see that control samples have now been removed from the data and 51 taxa have also been removed.
+
+```{r}
+
+phylo_eDNA
+phylo_eDNA_decontam
+```
+
+We can also check to see how many samples are categorized under different sample types.
+
+```{r}
+
+table(meta(phylo_eDNA_decontam)$sampleType, useNA = "always") #sample type
+table(meta(phylo_eDNA_decontam)$controlCheck, useNA = "always") #control type
+table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
+```
+
+We need to tidy up the shore positions to high, low and open water only.
+
+```{r}
+
+sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid "] <- "High"
+sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Tidal"] <- "Open Water"
+sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Subtidal"] <- "Open Water"
+sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid"] <- "High"
+
+table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
+```
+
+We also don't require our positive controls now.
+
+```{r}
+
+phylo_eDNA_decontam <- subset_samples(phylo_eDNA_decontam, !(controlCheck == "positive")) 
+
+table(meta(phylo_eDNA_decontam)$sampleType, useNA = "always") #sample type
+```
+
+## Filtering steps
+
+### Removal of low read samples
+
+It's good practice to remove any samples with the low read depth to prevent sampling bias driving ecological patterns. We are going to explore the distribution of read depths across samples to make a descision on a minimum depth threshold.
+
+We first need to calculate read depth per sample.
+
+```{r}
+
+# Number of reads per sample (before filtering)
+sample_depths_decontam <- microbiome::readcount(phylo_eDNA_decontam) %>%
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "fullID")
+
+colnames(sample_depths_decontam) <- c("fullID", "reads_prefilter")
+
+# Calculate the total ASVs by counting the number of rows 
+num_asvs_vec <- c(nrow(phyloseq::otu_table(phylo_eDNA_decontam)))  
+names(num_asvs_vec)[1] <- "no.taxa" 
+num_asvs_vec
+
+# Total number asvs per sample 
+asv_sum <- as.data.frame(colSums(phyloseq::otu_table(phylo_eDNA_decontam)!=0))  
+
+#Extract sample meta data as a separate R object 
+abundance_metadf <- phyloseq::sample_data(phylo_eDNA_decontam) 
+
+#Check if vector of sample_depths & asv_sum has the same order as our metadata rows
+identical(sample_depths_decontam$fullID,row.names(abundance_metadf)) 
+identical(row.names(asv_sum),row.names(abundance_metadf))  
+
+#Add sample depths and number of ASVs to metadata data frame 
+abundance_metadf[,"depth"] <- sample_depths_decontam$reads_prefilter 
+abundance_metadf[,"ASVs"] <- asv_sum
+```
+
+Check the distribution of sample reads.
+
+```{r}
+
+pcr_seq_depth_overall <- ggplot(abundance_metadf, aes(depth)) +
+  geom_histogram(bins = 60, color = "grey36", fill = "white") +   
+  geom_vline(xintercept = 3000, lty = 2,color = "orange") + # threshold
+  scale_x_log10() +   
+  labs(x = "# Reads", y = "# Samples") +
+  theme_bw() +
+  theme(panel.grid = element_blank())
+
+pcr_seq_depth_overall 
+```
+
+Now let's flag samples with an acceptable (TRUE) or inacceptable (FALSE) sequencing depth. We should aim to keep at least 90% of samples.
+
+```{r}
+
+abundance_metadf$depth_ok <- ifelse(abundance_metadf$depth < 3000, F, T)
+
+table(abundance_metadf$depth_ok[abundance_metadf$negCheckLogical=="FALSE"]) /
+  nrow(abundance_metadf[abundance_metadf$negCheckLogical=="FALSE",])
+```
+
+A minimum threshold of 3000 reads looks like it could work well. Let's now filter our data set to remove any samples below 3000.
+
+```{r}
+
+sample_depths_object <- sample_sums(phylo_eDNA_decontam) # Calculate sample sequencing depths
+min_reads <- 3000 # Define the minimum read threshold
+
+# Prune samples with fewer than 3000 reads
+phylo_eDNA_decontam_filtered <- prune_samples(sample_depths_object >= min_reads, phylo_eDNA_decontam)
+
+#Check the number of samples before and after filtering
+cat("Number of samples before filtering:", nsamples(phylo_eDNA_decontam), "\n")
+cat("Number of samples after filtering:", nsamples(phylo_eDNA_decontam_filtered), "\n") #removed 19 samples
+```
+
+### Filtering for target functional groups (broad)
+
+For this project, we were only interested in marine invertebrates and algae. So, we need to remove any other type of taxa. We'll start with a broad removal, then focus on species phyla.
+
+Let's first examine what groups we have.
+
+```{r}
+
+unique(tax_table(phylo_eDNA_decontam_filtered)[, "adult"])
+```
+
+Define which groups not of interest.
+
+```{r}
+
+fish_and_small_stuff <- c("fish", 
+                         "microplankton", 
+                         "phytoplankton", 
+                         "nanoplankton", 
+                         "mixoplankton", 
+                         "microbenthos")
+
+other_unwanted_class <- c("Aves", 
+                          "Mammalia", 
+                          "Amphibia")
+
+other_unwanted_order <- c("Squamata")
+```
+
+Now let's remove them from the relevant groups.
+
+```{r}
+
+phylo_eDNA_decontam_filtered <- subset_taxa(
+  phylo_eDNA_decontam_filtered,
+  !(adult %in% fish_and_small_stuff) & 
+  !(class %in% other_unwanted_class) & 
+  !(order %in% other_unwanted_order) 
+)
+
+# Rmove any taxa without occurances
+phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered, taxa_sums(phylo_eDNA_decontam_filtered) > 0)
+
+
+phylo_eDNA_decontam_filtered
+```
+
+### Filtering for target taxa (more specific)
+
+Let's define which phyla we are interested in.
+
+```{r}
+
+target_phyla <-   c(
+  "Acoela",
+  "Amphioxus",
+  "Annelida",
+  "Arthropoda",
+  "Brachiopoda",
+  "Bryozoa",
+  "Cephalochordata",
+  "Chaetognatha",
+  "Chlorophyta",
+  "Chordata",
+  "Cnidaria",
+  "Crustacea",
+  "Ctenophora",
+  "Dinoflagellata",
+  "Echiura",
+  "Echinoderm",
+  "Echinodermata",
+  "Euglenophyta",
+  "Gastrotricha",
+  "Gnathostomulids",
+  "Gyrista",
+  "Hemichordata",
+  "Kamptozoa",
+  "Kinorhyncha",
+  "Loricifera",
+  "Mollusca",
+  "Monogenea",
+  "Myzostomida",
+  "Nematoda",
+  "Nemertinea",
+  "Ochrophyta",
+  "Orthonectida",
+  "Phaeophyta",
+  "Phoronida",
+  "Placozoa",
+  "Platyhelminthes",
+  "Porifera",
+  "Priapulida",
+  "Pycnogonida",
+  "Rhodophyta",
+  "Sipunculida",
+  "Thallophyta",
+  "Tunicata",
+  "Turbellaria",
+  "Xenoturbella",
+  "Xiphosura"
+)
+```
+
+Now let's remove these from the data.
+
+```{r}
+
+phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered,                                              phylum %in% target_phyla)
+
+# Rmove any taxa without occurances
+phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered, taxa_sums(phylo_eDNA_decontam_filtered) > 0)
+                                            
+phylo_eDNA_decontam_filtered
+```
+
+Let's check to see how many taxa we have for invertebrates and macrophytes.
+
+First, let's define our groups.
+
+```{r}
+
+invert_phyla <- c(
+  "Acoela",
+  "Amphioxus",
+  "Annelida",
+  "Arthropoda",
+  "Brachiopoda",
+  "Bryozoa",
+  "Cephalochordata",
+  "Chaetognatha",
+  "Chordata",
+  "Cnidaria",
+  "Crustacea",
+  "Echiura",
+  "Echinoderm",
+  "Echinodermata",
+  "Gastrotricha",
+  "Gnathostomulids",
+  "Hemichordata",
+  "Kamptozoa",
+  "Kinorhyncha",
+  "Loricifera",
+  "Mollusca",
+  "Monogenea",
+  "Myzostomida",
+  "Nematoda",
+  "Nemertinea",
+  "Orthonectida",
+  "Phaeophyta",
+  "Phoronida",
+  "Placozoa",
+  "Platyhelminthes",
+  "Porifera",
+  "Priapulida",
+  "Pycnogonida",
+  "Sipunculida",
+  "Thallophyta",
+  "Tunicata",
+  "Xenoturbella",
+  "Xiphosura"
+)                    
+
+algae_phyla <- c(
+  "Chlorophyta",
+  "Ctenophora",
+  "Dinoflagellata",
+  "Euglenophyta",
+  "Gyrista",
+  "Ochrophyta",
+  "Phaeophyta",
+  "Rhodophyta",
+  "Thallophyta"
+)
+```
+
+Let's look at invertebrates first.
+
+```{r}
+
+phylo_eDNA_decontam_filtered_invert <- subset_taxa(phylo_eDNA_decontam_filtered, phylum %in% invert_phyla)  
+
+phylo_eDNA_decontam_filtered_invert   
+
+print(paste("Invertebrate species account for", (737 / 1026) * 100, "% of detections."))
+```
+
+Now let's look at algae.
+
+```{r}
+
+phylo_eDNA_decontam_filtered_algae <- subset_taxa(phylo_eDNA_decontam_filtered, phylum %in% algae_phyla)  
+
+phylo_eDNA_decontam_filtered_algae  
+
+print(paste("Algae species account for", (289 / 1026) * 100, "% of detections."))
+```
+
+## Further quality control
+
+Now we've got our decontaminated data, we can do a variety of quality control checks to make sure everything looks like it should.
+
+### Set-up (functions and variables)
+
+Let's set-up some functions we'll use later on to extract random pieces of information from our data.
+
+```{r}
+
+# Extract fieldID when adding TRUE or FALSE for replicate status
+extract_middle <- function(x) {
+  middle <- gsub("^[^-]+-([A-Za-z]{2}\\d{2}-\\d{2}).*_(18S|CO1)$", "\\1", x)
+  return(middle)
+}
+
+# Extract site when adding TRUE or FALSE for replicate status
+extract_site <- function(x) {
+  # Extract the part after the first '-' and before the second '-' or '_' and remove anything after
+  middle <- gsub("^[^-]+-([^-]+)-.*_(18S|CO1)$", "\\1", x)
+  return(middle)
+}
+
+
+# Extract the middle part (including fieldID and primer)
+extract_middle_all <- function(x) {
+  # Extract the middle part of the string
+  middle <- gsub("^[^-]+-(.+)$", "\\1", x)
+  
+  # Remove the term 'rep' and any following number
+  middle <- gsub("rep\\d*", "", middle, ignore.case = TRUE)
+  
+  # Return the modified middle part
+  return(middle)
+}
+
+# Modify the extract_middle function to extract the fieldID part for CO1 only groups (run 3)
+extract_middle_CO1 <- function(x) {
+  middle <- gsub("^[^-]+-([A-Za-z]{2}\\d{2}-\\d{2}).*_CO1$", "\\1", x)
+  return(middle)
+}
+```
+
+We need to set some variables for plots later.
+
+```{r}
+
+site_order <- c("Scourie", 
+                "Rispond", 
+                "Skerray", 
+                "Murkle Bay", 
+                "Portskerra", 
+                "Borwick, Yesnaby", 
+                "Sannick", 
+                "Wick", #Scotland
+                "Aberystwyth", 
+                "Neyland", 
+                "Broad Haven", 
+                "Skomer Island", 
+                "West Angle", 
+                "Monkstone Point", 
+                "Dale Jetty", 
+                "Martin's Haven", #South Wales
+                "Castlehead Rocks", 
+                "Filey Brigg", 
+                "Newton Point", 
+                "Rumbling Kern", 
+                "Scalby Mills", #Northumbria
+                "Great Orme East", 
+                "Little Orme", 
+                "Menai Bridge", 
+                "Porth Oer", 
+                "Porth Swtan", 
+                "Rhosneigr", #North Wales
+                "Lizard Point", 
+                "Looe", 
+                "Sennen Cove", 
+                "St Ives", 
+                "Trevone") #Cornwall
+
+control_order <- c("field-control", 
+                   "lab-extraction-control", 
+                   "lab-negative-control", 
+                   "lab-positive-control", 
+                   "sample", 
+                   "run-replicate", 
+                   "failed-repeat", 
+                   "plate-replicate")
+
+control_order_tidy <- c("Field control", 
+                        "Lab extraction control", 
+                        "Lab negative control", 
+                        "Lab positive control", 
+                        "Sample", 
+                        "Run replicate", 
+                        "Failed repeat", 
+                        "Plate replicate")
+```
+
+### Explore read depths
+
+Let's summarize the number of reads before and after decontamination and filtering. We calculated the pre-filtered data above, so now let's calculate the post filtered data and compare them.
+
+```{r}
+
+# Number of reads per sample (after decontamination and filtering)
+sample_depths_decontam_filter <- microbiome::readcount(phylo_eDNA_decontam_filtered) %>% 
+  as.data.frame() %>%
+  tibble::rownames_to_column(var = "fullID")
+
+colnames(sample_depths_decontam_filter) <- c("fullID", "reads_postfilter")
+
+# Reads before and after decontamination together
+all_depths <- left_join(sample_depths_decontam, 
+                        sample_depths_decontam_filter, 
+                        by = "fullID")
+
+#add difference between start and end
+all_depths$reads_removed <- all_depths$reads_prefilter - all_depths$reads_postfilter 
+
+tail(all_depths)
+```
+
+Let's create some figures to visualize read depths before and after filtering. We are going to create some new data set for plotting.
+
+We did the pre-filtered data above. Let's do the filtered data now.
