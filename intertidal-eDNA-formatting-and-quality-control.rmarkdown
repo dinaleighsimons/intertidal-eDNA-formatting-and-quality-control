@@ -7,7 +7,11 @@ author: Dina-Leigh Simons
 toc: true
 ---
 
+
+
 ## Load packages
+
+
 
 ```{r}
 #| label: load-packages
@@ -43,6 +47,8 @@ if(length(new.packages)) install.packages(new.packages)
 invisible(lapply(list.of.packages, library, character.only = TRUE))
 ```
 
+
+
 ## Importing data
 
 We'll first load all the required data, including outputs from the taxonomic assignment (.txt files), ASV data (.tsv and .fasta) and metadata (.csv).
@@ -52,6 +58,8 @@ We'll first load all the required data, including outputs from the taxonomic ass
 We BLASTed ASVs against curated databases (MIDORI2 for CO1, Silva for 18S) separately for five regions: Scotland, North and South Wales, Northeast England, and Southwest England.
 
 The BLAST results were then processed using MEtaGenome ANalyzer (MEGAN), which parses the alignments and assigns taxonomy using the Lowest Common Ancestor (LCA) algorithm. This approach ensures accurate taxonomic classification by considering multiple hits while conservatively resolving ambiguous assignments.
+
+
 
 ```{r}
 #| label: load-taxonomy-files
@@ -101,7 +109,11 @@ Controls_CO1_taxa<- read.table("Input_Data/MEGAN_data/Repeats_CO1_ASVs_blast_UNI
 colnames(Controls_CO1_taxa)<- c("ASV", "taxonomy")
 ```
 
+
+
 Let's take a look at one of the MEGAN outputs. This file shows the ASVs detected in Scotland derived from the CO1 gene.
+
+
 
 ```{r}
 #| echo: true
@@ -109,9 +121,13 @@ Let's take a look at one of the MEGAN outputs. This file shows the ASVs detected
 head(SCH_CO1_taxa)
 ```
 
+
+
 ### ASV data
 
 Now we import the ASV count and sequence information for each region, obtained using DADA2. We have to do a bit of wrangling to get the fasta file into the correct format.
+
+
 
 ```{r}
 #| label: load-asv-files
@@ -198,7 +214,11 @@ controls_PhD2_asv_fasta_CO1_df$Seqs<- toupper(controls_PhD2_asv_fasta_CO1_df$Seq
 
 ```
 
+
+
 Let's take a look at an example of the two imported ASV files. Again, these shows the ASVs detected in Scotland derived from the CO1 gene.
+
+
 
 ```{r}
 #| echo: true
@@ -212,9 +232,13 @@ str(SCH_asv_count_CO1) #counts
 head(SCH_asv_fasta_CO1_df) #sequences
 ```
 
+
+
 ### Metadata
 
 Finally, let's import any metadata associated to our samples.
+
+
 
 ```{r}
 #| label: load-metadata
@@ -223,25 +247,37 @@ IDs_stageone <- read.csv("Input_Data/Metadata/sample_ID_matching_stageone.csv")
 IDs_stagetwo <- read.csv("Input_Data/Metadata/sample_ID_matching_stagetwo.csv")
 ```
 
+
+
 And let's take a quick look at the metadata files too. You can see there are 63 variables which are associated to our samples.
+
+
 
 ```{r}
 #| label: str-meta
 str(sites)
 ```
 
+
+
 We also have some data to help tidy up sample IDs later in the pipeline.
+
+
 
 ```{r}
 #| label: head-IDs
 head(IDs_stageone) #labels
 ```
 
+
+
 ## Data wrangling to create a single data set
 
 We have lots of different files here which need to be manipulated into one single data frame for each primer. A few steps are required to achieve this.
 
 ### Merge taxonomic assignments and ASV information
+
+
 
 ```{r}
 #| label: merge-ASV-Seq
@@ -289,9 +325,13 @@ Controls_asv_CO1_merged <- merge(controls_PhD2_asv_fasta_CO1_df, controls_PhD2_a
 Controls_taxa_CO1 <- full_join(Controls_CO1_taxa, Controls_asv_CO1_merged, by = "ASV") #full_join keeps ASVs which didn't get assigned, left_join would remove unassigned
 ```
 
+
+
 ### Remove undetermined sequences in 18S data
 
 Sequences that were unable to be assigned to a specific sample in the 18S are stored under the variable 'S0'. We want to remove those sequences from our data.
+
+
 
 ```{r}
 #| label: remove-undetermined-seqs
@@ -307,9 +347,13 @@ Controls_taxa_18S <- Controls_taxa_18S[,!(names(Controls_taxa_18S) %in% drop)]
 
 ```
 
+
+
 ### Convert to long format
 
 Here, we flip the data sets into a long format and add a region variable.
+
+
 
 ```{r}
 #| label: convert-long
@@ -358,18 +402,26 @@ flip_controls_CO1$region <- "Varied"
 
 ```
 
+
+
 Let's take a look at the long format for Scotland CO1. We now have a long format data set with ASVs, taxonomy, sequences, sample names, number of reads and region variables.
+
+
 
 ```{r}
 #| label: head-flipped
 head(flip_SCH_CO1)
 ```
 
+
+
 ### Join data frames
 
 We will merge our data in multiple stages: first by sequencing run, then by gene, and finally, we will perform the final join. Once we have our single data frame, we'll add in our metadata.
 
 Our data was derived from multiple sequences runs. Therefore, we are going to join the data in the same sequencing run first. This means we can correctly match IDs we want to sample names.
+
+
 
 ```{r}
 #| label: join-seq-run
@@ -401,7 +453,11 @@ full_stagetwo_CO1 <-rbind(flip_controls_CO1, flip_CN_CO1, flip_NE_CO1, flip_NW_C
 full_stagetwo_CO1$region <- as.factor(full_stagetwo_CO1$region)
 ```
 
+
+
 Now we join data sets by primer and add primer variable. This will leave us with two main data sets, one for 18S and one for CO1. We also want to make sure out wrangling worked as expected by checking there are no duplicate rows.
+
+
 
 ```{r}
 #| label: join-primer
@@ -415,7 +471,11 @@ full_CO1$primer <- "CO1"
 any(duplicated(full_CO1)) #check for duplicates - should be false
 ```
 
+
+
 Finally, we join the two primer data sets into a single data set.
+
+
 
 ```{r}
 #| label: join-final
@@ -424,7 +484,11 @@ eDNA_ASVs_long <- rbind(full_18S, full_CO1)
 any(duplicated(eDNA_ASVs_long)) #check for duplicates - should be false (this may take a minute or so)
 ```
 
+
+
 Let's now add in our metadata and do some final tweaks to sample names.
+
+
 
 ```{r}
 #| label: add-metadata
@@ -437,13 +501,19 @@ eDNA_long_data <- full_join(eDNA_long_data, sites, by = "fieldID")
 eDNA_long_data$fullID = paste(eDNA_long_data$fieldID, eDNA_long_data$primer, sep="_") #adds CO1 or 18S onto the end of the fieldID for further analyses
 ```
 
+
+
 Great - we now have a single long data set with all ASV across samples and genes, as well as associated metadata.
+
+
 
 ```{r}
 #| label: str-long-data
 
 str(eDNA_long_data)
 ```
+
+
 
 ## Cleaning taxonomic names
 
@@ -452,6 +522,8 @@ Now we have our data, we need to tidy up our taxonomic names and get more inform
 ### Remove ambiguous names
 
 We first remove any occurrences where the taxonomic matches certain ambiguous phrases. These assignment tell us nothing about the organism we've detected, so it's best to remove them.
+
+
 
 ```{r}
 #| label: remove-ambiguous-names
@@ -491,9 +563,13 @@ eDNA_long_data_cleaning <- eDNA_long_data[!grepl(paste(unassigned_phrases, colla
   drop_na(taxonomy)
 ```
 
+
+
 ### Using clean_names() in janitor package
 
 We often get random spaces or phrases we don't want in our taxonomic names. We can use the [janitor package](https://cran.r-project.org/web/packages/janitor/vignettes/janitor.html) to clean our taxonomic names.
+
+
 
 ```{r}
 #| message: false
@@ -510,13 +586,19 @@ eDNA_long_data_cleaned <- full_join(names_together, eDNA_long_data_cleaning)
 
 ```
 
+
+
 We should now have a variable added to our data set called taxonomy_clean. We will use this variable as the taxonomic name moving forward.
+
+
 
 ```{r}
 #| label: str-long-data-clean
 
 str(eDNA_long_data_cleaned)
 ```
+
+
 
 We can see the data set is a lot smaller after removal of rows with ambiguous names.
 
@@ -529,6 +611,8 @@ The [World Register of Marine Species](https://www.marinespecies.org/) (WoRMS) i
 First, we've got to set-up some functions.
 
 The first function called `get_wormsid_noerror` extracts unique identifiers for all taxon used in WoRMS called AphiaIDs.
+
+
 
 ```{r}
 #| label: define-function-wormsid
@@ -566,7 +650,11 @@ get_wormsid_noerror <- function(sp_name){
 }
 ```
 
+
+
 The second function called `get_wormsmeta` accesses and formats any taxonomic meta data based on Aphia IDs.
+
+
 
 ```{r}
 #| label: define-function-wormsmeta
@@ -586,7 +674,11 @@ get_wormsmeta <- function(aphia_input){
 }
 ```
 
+
+
 The third function called `get_worms_fgrp` (originally developed [here](https://github.com/tomjwebb/WoRMS-functional-groups)) accesses and formats information on broad taxonomic groupings of taxa based on Aphia IDs.
+
+
 
 ```{r}
 #| label: define-function-worms-fgrp
@@ -739,7 +831,11 @@ get_worms_fgrp <- function(AphiaID) {
 }
 ```
 
+
+
 Before we run anything, we need to extract the taxa names we want to run through the functions.
+
+
 
 ```{r}
 #| label: get-taxa-names
@@ -751,6 +847,8 @@ eDNA_taxa_unique_df <- data.frame(taxonomy = tolower(unique(eDNA_long_data_clean
 head(eDNA_taxa_unique_df)
 ```
 
+
+
 ### Get Aphia IDs
 
 Let's use the function `get_wormsid()` to obtain Aphia IDs for our taxa.
@@ -758,6 +856,8 @@ Let's use the function `get_wormsid()` to obtain Aphia IDs for our taxa.
 The duration of this task is approximately 15-minutes for this data set, but can vary depending on the size of the data. Any non-matched species will produce a NA.
 
 To prevent the document taking hours to render, we've put \# in front of the code for now. We've saved the output and reloaded the data back in.
+
+
 
 ```{r}
 #| label: get-worms-alphia
@@ -769,7 +869,11 @@ To prevent the document taking hours to render, we've put \# in front of the cod
   #select(-name)
 ```
 
+
+
 We'll save this output to reduce time when rerunning.
+
+
 
 ```{r}
 #| label: write-worms-alphia
@@ -777,7 +881,11 @@ We'll save this output to reduce time when rerunning.
 #write.csv(aphiaID_worms_output, "Processed_Data/aphiaID_worms_output.csv")
 ```
 
+
+
 Let's reload the data back in and do some formatting.
+
+
 
 ```{r}
 #| label: reload--worms-alphia
@@ -790,7 +898,11 @@ aphiaID_worms_output$aphiaID = as.integer(aphiaID_worms_output$aphiaID) #convert
 head(aphiaID_worms_output)
 ```
 
+
+
 Let's check how many matches we made.
+
+
 
 ```{r}
 #| echo: false
@@ -799,7 +911,11 @@ Let's check how many matches we made.
 print(paste("You matched", nrow(eDNA_taxa_unique_df) - sum(is.na(aphiaID_worms_output$aphiaID)),"/", nrow(eDNA_taxa_unique_df), "taxa with AphiaIDs. Therefore,", sum(is.na(aphiaID_worms_output$aphiaID)), "entries could not be matched and do not have AphiaIDs."))
 ```
 
+
+
 Now let's add the Aphia IDs to our main data set.
+
+
 
 ```{r}
 #| label: join-worms-alphia
@@ -809,9 +925,13 @@ eDNA_long_data_final <- full_join(eDNA_long_data_cleaned, aphiaID_worms_output, 
 str(eDNA_long_data_final)
 ```
 
+
+
 ### Get taxonomic metadata
 
 Next, let's use the function `get_wormsmeta()` to obtain taxonomic information for our Aphia IDs. This command takes a few minutes to run.
+
+
 
 ```{r}
 #| label: get-worms-meta
@@ -819,7 +939,11 @@ Next, let's use the function `get_wormsmeta()` to obtain taxonomic information f
 worms_meta_output <- get_wormsmeta(aphiaID_worms_output)
 ```
 
+
+
 Let's look at the output. We can see we now have lots of information for each taxon.
+
+
 
 ```{r}
 #| label: view-worms-meta
@@ -827,7 +951,11 @@ Let's look at the output. We can see we now have lots of information for each ta
 str(worms_meta_output)
 ```
 
+
+
 A bit of tidying of this output is required to be able to join it with our own.
+
+
 
 ```{r}
 #| label: tidy-worms-meta
@@ -838,7 +966,11 @@ worms_meta_output_tidy <- worms_meta_output %>%
   distinct() #remove duplicates
 ```
 
+
+
 Now let's add the taxonomic metadata to our main data set and check the joining of data sets worked.
+
+
 
 ```{r}
 #| label: join-worms-meta
@@ -849,11 +981,15 @@ which(is.na(eDNA_long_data_final$aphiaID), arr.ind=TRUE) #check NAs in IDs
 any(duplicated(eDNA_long_data_final)) #check for duplicates
 ```
 
+
+
 ### Get broad functional groups
 
 Finally, let’s use the function `get_worms_fgrp()` to obtain the broad taxonomic groups of our taxa.
 
 Similar to above, this command takes a long time (approximately 30 minutes with this data set). We have put \# in front of this code to reduce time to render.
+
+
 
 ```{r}
 #| label: get-worms-fgrp
@@ -865,7 +1001,11 @@ species <- tibble(AphiaID = c(unique(eDNA_long_data_final$aphiaID))) #list aphia
   #do(get_worms_fgrp(AphiaID = .$AphiaID))
 ```
 
+
+
 We'll save this output to reduce time when rerunning.
+
+
 
 ```{r}
 #| label: write-worms-fgrp  
@@ -873,7 +1013,11 @@ We'll save this output to reduce time when rerunning.
 #write.csv(worms_fgrp_output, "Processed_Data/worms_fgrp_output.csv")
 ```
 
+
+
 Let's reload the data back in.
+
+
 
 ```{r}
 #| label: reload-worms-fgrp  
@@ -881,7 +1025,11 @@ Let's reload the data back in.
 worms_fgrp_output <- read.csv("Processed_Data/worms_fgrp_output.csv", row.names = 1)
 ```
 
+
+
 Let's see how many matches we got.
+
+
 
 ```{r}
 #| label: match_worms-fgrp 
@@ -890,7 +1038,11 @@ Let's see how many matches we got.
 print(paste("You found function groups for", nrow(worms_fgrp_output) - sum(is.na(worms_fgrp_output$adult)),"/", nrow(worms_fgrp_output), "adult taxa. Therefore,", sum(is.na(worms_fgrp_output$adult)), "have no functional group."))
 ```
 
+
+
 Now let's add the functional group information to our main data set and check the joining of data sets worked.
+
+
 
 ```{r}
 #| label: join-worms-fgrp
@@ -900,7 +1052,11 @@ worms_fgrp_output_tidy<- worms_fgrp_output %>% dplyr::rename(aphiaID = AphiaID)
 eDNA_long_data_final <- left_join(eDNA_long_data_final, worms_fgrp_output_tidy)
 ```
 
+
+
 Quick look at the final long data set (remember this has not been decontaminated yet!).
+
+
 
 ```{r}
 #| label: str-long-data-final
@@ -908,11 +1064,15 @@ Quick look at the final long data set (remember this has not been decontaminated
 str(eDNA_long_data_final)
 ```
 
+
+
 ## Create phyloseq object
 
 We've now got a tidied long data set with lots of meta data. To aid further check and analyses, we can convert our long data into a `phyloseq` object to be used in the `phyloseq` package.
 
 First, we need to document and remove any failed samples.
+
+
 
 ```{r}
 #| label: remove-failed-samples  
@@ -934,9 +1094,13 @@ failed_samples <- c("PHD1-SCH02-03_CO1",
 eDNA_long_data_removefailed <- filter(eDNA_long_data_final, !fullID %in% failed_samples)
 ```
 
+
+
 ### Create tax_table()
 
 We need to extract all the taxonomic information from our long data and do some tidying.
+
+
 
 ```{r}
 #| label: format-tax-table  
@@ -958,7 +1122,11 @@ rownames(taxa) <-taxa$valid_name
 taxa <- as.matrix(taxa)
 ```
 
+
+
 Now, save the taxa matrix as a tax_table() object.
+
+
 
 ```{r}
 #| label: create-tax-table   
@@ -966,9 +1134,13 @@ Now, save the taxa matrix as a tax_table() object.
 phylo_tax <- tax_table(taxa)
 ```
 
+
+
 ### Create sample_data()
 
 Similarly, need to extract all the relavent sample information from our long data and do some tidying.
+
+
 
 ```{r}
 #| label: format-sample-table
@@ -1021,7 +1193,11 @@ meta <- meta[order(meta$fullID),] #order rows alphabetically
 rownames(meta) <-meta$fullID
 ```
 
+
+
 Now, save the sample matrix as a sample_data() object.
+
+
 
 ```{r}
 #| label: create-sample-table
@@ -1029,9 +1205,13 @@ Now, save the sample matrix as a sample_data() object.
 phylo_samples <- sample_data(meta)
 ```
 
+
+
 ### Create otu_table()
 
 Since our data are currently in long format, we need to recreate the ASV matrix through some data wrangling.
+
+
 
 ```{r}
 #| label: format-otu-table-long
@@ -1045,7 +1225,11 @@ str(species_reads_long)
 which(is.na(species_reads_long)) #check for NAs
 ```
 
+
+
 Turning our long data into a wide format takes a long time due to the size of the data.
+
+
 
 ```{r}
 #| label: compile-otu-table-wide
@@ -1057,7 +1241,11 @@ species_reads_wide <- species_reads_long %>%
   as.data.frame()
 ```
 
+
+
 A bit of formatting is needed for joining elements together later on. We can see that we have 6321 ASVs and 655 samples.
+
+
 
 ```{r}
 #| label: format-otu-table-wide
@@ -1073,9 +1261,13 @@ species_reads_wide <- species_reads_wide %>% column_to_rownames(var="ASV")
 dim(species_reads_wide)
 ```
 
+
+
 We can also repeat the last few steps but group by `valid_names` to get a taxa-level `otu_table` . In my further analyses, taxa-level detection are appropriate and so we will move forward using this `otu_table`.
 
 We can see that we have 1780 ASVs and 655 samples.
+
+
 
 ```{r}
 
@@ -1107,7 +1299,11 @@ species_reads_wide_taxa <- species_reads_wide_taxa %>% column_to_rownames(var="v
 dim(species_reads_wide_taxa)
 ```
 
+
+
 Now let's create our `otu_table` elements - one at a ASV level (in case we need it later on) and one at a taxa-level (which we'll use for compiling the `phyloseq` object).
+
+
 
 ```{r}
 #| label: create-otu-table
@@ -1116,7 +1312,11 @@ phylo_asv <- otu_table(species_reads_wide, taxa_are_rows=TRUE)
 phylo_asv_taxa <- otu_table(species_reads_wide_taxa, taxa_are_rows=TRUE)
 ```
 
+
+
 It's useful to do some checks befor we compile our taxa-level `phyloseq` object to make sure everything aligns correctly. This is why we've performed the alphabetical ordering in the above steps.
+
+
 
 ```{r}
 #| label: check-phyloseq-taxa
@@ -1141,7 +1341,11 @@ phylo_eDNA <- phyloseq(phylo_asv_taxa, phylo_tax, phylo_samples)
 phylo_eDNA <- subset_taxa(phylo_eDNA, taxa_sums(phylo_eDNA) > 0)
 ```
 
+
+
 Let's take a look at what the `phyloseq` object looks like.
+
+
 
 ```{r}
 #| label: look-phyloseq
@@ -1154,6 +1358,8 @@ phylo_eDNA
 microbiome::summarize_phyloseq(phylo_eDNA) #full summary
 ```
 
+
+
 ## Decontamination
 
 ### Visualizing contaminants
@@ -1161,6 +1367,8 @@ microbiome::summarize_phyloseq(phylo_eDNA) #full summary
 Let's produce some figures to visualize potential contaminates present in our negative controls.
 
 We need to subset the negative control samples first.
+
+
 
 ```{r}
 #| label: subset-negatives
@@ -1171,7 +1379,11 @@ phylo_neg_controls = subset_samples(phylo_eDNA, sampleType == "field-control" | 
 phylo_neg_controls <- prune_taxa(taxa_sums(phylo_neg_controls) > 0, phylo_neg_controls)
 ```
 
+
+
 Let's check the distribution of taxa in the negative controls.
+
+
 
 ```{r}
 #| label: abundance-negatives
@@ -1179,7 +1391,11 @@ Let's check the distribution of taxa in the negative controls.
 plot(sort(taxa_sums(phylo_neg_controls), TRUE), type="h")
 ```
 
+
+
 It might be useful to view contaminates by primer. Let's look at 18S first.
+
+
 
 ```{r}
 #| label: 18S-negatives-abundance
@@ -1191,7 +1407,11 @@ phylo_neg_18S <- subset_samples(phylo_neg_controls, primer == "18S")
   theme(legend.position = 'none'))
 ```
 
+
+
 And now for CO1.
+
+
 
 ```{r}
 #| label: CO1-negatives-abundance
@@ -1203,7 +1423,11 @@ phylo_neg_CO1 <- subset_samples(phylo_neg_controls, primer == "CO1")
   theme(legend.position = 'none'))
 ```
 
+
+
 We can also find taxa that are shared among a certain number of negative controls. As an example, we check which taxa are present in more than five samples.
+
+
 
 ```{r}
 #| label: negatives-shared
@@ -1213,9 +1437,13 @@ controls_shared_taxa = filter_taxa(phylo_neg_controls,
 plot_bar(controls_shared_taxa, "fullID", fill = "valid_name")
 ```
 
+
+
 We can also visualize our original PCR plates (if we have variables in our metadata which state the position of samples on the plates).
 
 First, calculate overall read depth across samples and this to our sample data.
+
+
 
 ```{r}
 #| label: calculate-sample-depths
@@ -1231,7 +1459,11 @@ sample_data <- sample_data(phylo_eDNA)
 sample_data[,"depth"] <- sample_depths
 ```
 
+
+
 Let's look at CO1 first.
+
+
 
 ```{r}
 #| label: PCR-plate-CO1
@@ -1282,7 +1514,11 @@ pcr_plate_CO1 <- ggplot(sample_data_CO1, aes(x = plate_col_CO1, y = plate_row_CO
 pcr_plate_CO1
 ```
 
+
+
 And now for 18S.
+
+
 
 ```{r}
 #| label: PCR-plate-18S
@@ -1332,6 +1568,8 @@ pcr_plate_18S <- ggplot(sample_data_18S, aes(x = plate_col_18S, y = plate_row_18
 pcr_plate_18S
 ```
 
+
+
 ### Removing contaminants
 
 We can see from our plots we have some contamination. We deal with this next.
@@ -1341,6 +1579,8 @@ There are multiple ways to deal with contamination. Here, we take the approach t
 We'll remove taxa in stages: from sites (using the field controls), extraction batch (using the extraction controls) then PCR batch (using the PCR controls). This prevents unnecessary blanket removal across the whole data set.
 
 Let's set-up the site level decontamination function called `remove_field_control_taxa_abund` first.
+
+
 
 ```{r}
 
@@ -1461,7 +1701,11 @@ remove_field_control_taxa_abund <- function(phylo_object) {
 }
 ```
 
+
+
 Next, the function for extraction level decontamination called `remove_extract_control_taxa_abund`.
+
+
 
 ```{r}
 
@@ -1587,9 +1831,13 @@ remove_extract_control_taxa_abund <- function(phylo_object) {
 }
 ```
 
+
+
 And finally, the function for PCR level decontamination. We have to do this by marker, considering the PCRs are different for each.
 
 The 18S function is called `remove_PCR_control_taxa_18S_abund`.
+
+
 
 ```{r}
 
@@ -1753,7 +2001,11 @@ remove_PCR_control_taxa_18S_abund <- function(phylo_object) {
 
 ```
 
+
+
 And the CO1 function is called `remove_PCR_control_taxa_CO1_abund`.
+
+
 
 ```{r}
 ### PCR negative decontamination (CO1)
@@ -1921,7 +2173,11 @@ remove_PCR_control_taxa_CO1_abund <- function(phylo_object) {
 }
 ```
 
+
+
 Time to run the decontamination functions one after the other, using the output of the first as the input for the last.
+
+
 
 ```{r}
 
@@ -1954,9 +2210,13 @@ phylo_eDNA_decontam <- phylo_eDNA_filtered_PCR_18S_abun
 phylo_eDNA_decontam <- subset_taxa(phylo_eDNA_decontam, taxa_sums(phylo_eDNA_decontam) > 0)
 ```
 
+
+
 Let's compared our decontaminated data with the original.
 
 We can see that control samples have now been removed from the data and 51 taxa have also been removed.
+
+
 
 ```{r}
 
@@ -1964,7 +2224,11 @@ phylo_eDNA
 phylo_eDNA_decontam
 ```
 
+
+
 We can also check to see how many samples are categorized under different sample types.
+
+
 
 ```{r}
 
@@ -1973,7 +2237,11 @@ table(meta(phylo_eDNA_decontam)$controlCheck, useNA = "always") #control type
 table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
 ```
 
+
+
 We need to tidy up the shore positions to high, low and open water only.
+
+
 
 ```{r}
 
@@ -1985,7 +2253,11 @@ sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$
 table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
 ```
 
+
+
 We also don't require our positive controls now.
+
+
 
 ```{r}
 
@@ -1994,6 +2266,8 @@ phylo_eDNA_decontam <- subset_samples(phylo_eDNA_decontam, !(controlCheck == "po
 table(meta(phylo_eDNA_decontam)$sampleType, useNA = "always") #sample type
 ```
 
+
+
 ## Filtering steps
 
 ### Removal of low read samples
@@ -2001,6 +2275,8 @@ table(meta(phylo_eDNA_decontam)$sampleType, useNA = "always") #sample type
 It's good practice to remove any samples with the low read depth to prevent sampling bias driving ecological patterns. We are going to explore the distribution of read depths across samples to make a descision on a minimum depth threshold.
 
 We first need to calculate read depth per sample.
+
+
 
 ```{r}
 
@@ -2031,7 +2307,11 @@ abundance_metadf[,"depth"] <- sample_depths_decontam$reads_prefilter
 abundance_metadf[,"ASVs"] <- asv_sum
 ```
 
+
+
 Check the distribution of sample reads.
+
+
 
 ```{r}
 
@@ -2046,7 +2326,11 @@ pcr_seq_depth_overall <- ggplot(abundance_metadf, aes(depth)) +
 pcr_seq_depth_overall 
 ```
 
+
+
 Now let's flag samples with an acceptable (TRUE) or unacceptable (FALSE) sequencing depth. We should aim to keep at least 90% of samples.
+
+
 
 ```{r}
 
@@ -2056,7 +2340,11 @@ table(abundance_metadf$depth_ok[abundance_metadf$negCheckLogical=="FALSE"]) /
   nrow(abundance_metadf[abundance_metadf$negCheckLogical=="FALSE",])
 ```
 
+
+
 A minimum threshold of 3000 reads looks like it could work well. Let's now filter our data set to remove any samples below 3000.
+
+
 
 ```{r}
 
@@ -2071,18 +2359,26 @@ cat("Number of samples before filtering:", nsamples(phylo_eDNA_decontam), "\n")
 cat("Number of samples after filtering:", nsamples(phylo_eDNA_decontam_filtered), "\n") #removed 19 samples
 ```
 
+
+
 ### Filtering for target functional groups (broad)
 
 For this project, we were only interested in marine invertebrates and algae. So, we need to remove any other type of taxa. We'll start with a broad removal, then focus on species phyla.
 
 Let's first examine what groups we have.
 
+
+
 ```{r}
 
 unique(tax_table(phylo_eDNA_decontam_filtered)[, "adult"])
 ```
 
+
+
 Define which groups not of interest.
+
+
 
 ```{r}
 
@@ -2100,7 +2396,11 @@ other_unwanted_class <- c("Aves",
 other_unwanted_order <- c("Squamata")
 ```
 
+
+
 Now let's remove them from the relevant groups.
+
+
 
 ```{r}
 
@@ -2118,9 +2418,13 @@ phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered, taxa_s
 phylo_eDNA_decontam_filtered
 ```
 
+
+
 ### Filtering for target taxa (more specific)
 
 Let's define which phyla we are interested in.
+
+
 
 ```{r}
 
@@ -2174,7 +2478,11 @@ target_phyla <-   c(
 )
 ```
 
+
+
 Now let's remove these from the data.
+
+
 
 ```{r}
 
@@ -2186,9 +2494,13 @@ phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered, taxa_s
 phylo_eDNA_decontam_filtered
 ```
 
+
+
 Let's check to see how many taxa we have for invertebrates and macrophytes.
 
 First, let's define our groups.
+
+
 
 ```{r}
 
@@ -2246,7 +2558,11 @@ algae_phyla <- c(
 )
 ```
 
+
+
 Let's look at invertebrates first.
+
+
 
 ```{r}
 
@@ -2257,7 +2573,11 @@ phylo_eDNA_decontam_filtered_invert
 print(paste("Invertebrate species account for", (737 / 1026) * 100, "% of detections."))
 ```
 
+
+
 Now let's look at algae.
+
+
 
 ```{r}
 
@@ -2268,6 +2588,8 @@ phylo_eDNA_decontam_filtered_algae
 print(paste("Algae species account for", (289 / 1026) * 100, "% of detections."))
 ```
 
+
+
 ## Further quality control
 
 Now we've got our decontaminated data, we can do a variety of quality control checks to make sure everything looks like it should.
@@ -2275,6 +2597,8 @@ Now we've got our decontaminated data, we can do a variety of quality control ch
 ### Set-up (functions and variables)
 
 Let's set-up some functions we'll use later on to extract random pieces of information from our data.
+
+
 
 ```{r}
 
@@ -2311,7 +2635,11 @@ extract_middle_CO1 <- function(x) {
 }
 ```
 
+
+
 We need to set some variables for plots later.
+
+
 
 ```{r}
 
@@ -2367,9 +2695,13 @@ control_order_tidy <- c("Field control",
                         "Plate replicate")
 ```
 
+
+
 ### Explore read depths
 
 Let's summarize the number of reads before and after decontamination and filtering. We calculated the pre-filtered data above, so now let's calculate the post filtered data and compare them.
+
+
 
 ```{r}
 
@@ -2391,7 +2723,11 @@ all_depths$reads_removed <- all_depths$reads_prefilter - all_depths$reads_postfi
 tail(all_depths)
 ```
 
+
+
 Let's create some figures to visualize read depths before and after filtering. We are going to create some new data set for plotting.
+
+
 
 ```{r}
 ### Before decontamination ----
@@ -2455,3 +2791,4 @@ ggplot2::ggplot(abundance_metadf, aes(y=depth, x=shorePosition, colour = shorePo
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
 ```
+
