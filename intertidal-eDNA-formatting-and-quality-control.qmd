@@ -524,6 +524,8 @@ We can see the data set is a lot smaller after removal of rows with ambiguous na
 
 The [World Register of Marine Species](https://www.marinespecies.org/) (WoRMS) is an authoritative classification and catalogue of marine names. It can provide a range of information. We will be extracting information on taxonomy and functional trait information using the taxize and worrms functions.
 
+You can find all the available attributes on WoRMS [here](https://marinespecies.org/traits/aphia.php?p=stats_attributes).
+
 ### Defining functions
 
 First, we've got to set-up some functions.
@@ -2268,13 +2270,77 @@ phylo_eDNA_decontam_filtered_algae
 print(paste("Algae species account for", (289 / 1026) * 100, "% of detections."))
 ```
 
+### Rarefying
+
+Sometimes, we may want to rarefy our data.
+
+```{r}
+#pseq_rarefy <- phyloseq::rarefy_even_depth(phylo_eDNA_decontam_filtered,
+                                           #sample.size = #min(microbiome::readcount(phylo_eDNA_decontam_filtered)))
+
+#pseq_rarefy
+#microbiome::readcount(pseq_rarefy)
+```
+
+## Save final datasets
+
+We won't be making anymore changes to our main data, so let's export the `phyloseq` object to use elsewhere.
+
+```{r}
+
+phylo_rocky_eDNA <- phylo_eDNA_decontam_filtered 
+
+save(phylo_rocky_eDNA, file = "Processed_Data/phylo_rocky_eDNA.RData") #save object
+```
+
+And the rarefied data.
+
+```{r}
+#save(pseq_rarefy, file = "Processed_Data/phylo_rocky_eDNA_rarefied.RData") #save object
+```
+
+Let's also convert it to a long data format incase we need it for further analyses.
+
+```{r}
+
+#Extra elements and format
+#OTU table
+otu_table <- as.data.frame(otu_table(phylo_rocky_eDNA))
+otu_table$taxa <- rownames(otu_table) 
+rownames(otu_table) <- NULL
+otu_long <- melt(otu_table, id.vars = c("taxa"))
+colnames(otu_long) = c("taxa", "fullID", "reads")
+
+# Taxonomic info
+taxa_table <- as.data.frame(tax_table(phylo_rocky_eDNA))
+taxa_table$taxa <- rownames(taxa_table)
+
+# Meta data
+sample_data <- data.frame(sample_data(phylo_rocky_eDNA))
+
+# Merge
+merged_data <- right_join(otu_long, sample_data, by = "fullID")
+phylo_rocky_eDNA_long <- right_join(merged_data, taxa_table, by = "taxa")
+phylo_rocky_eDNA_long$localityID <- as.factor(phylo_rocky_eDNA_long$localityID)
+
+#save combined dataset 
+write.csv(phylo_rocky_eDNA_long, "Processed_Data/phylo_rocky_eDNA_long.csv")
+```
+
 ## Further quality control
 
 Now we've got our decontaminated data, we can do a variety of quality control checks to make sure everything looks like it should.
 
 ### Set-up (functions and variables)
 
-Let's set-up some functions we'll use later on to extract random pieces of information from our data.
+First, I stop scientific notation being presented in plots.
+
+```{r}
+
+options(scipen=5)
+```
+
+Let's set-up some functions we'll use later on to extract random pieces of information from our data. Note: these functions only work currently for the format of IDs I have in this dataset. They made need altering for other datasets.
 
 ```{r}
 
@@ -2369,7 +2435,9 @@ control_order_tidy <- c("Field control",
 
 ### Explore read depths
 
-Let's summarize the number of reads before and after decontamination and filtering. We calculated the pre-filtered data above, so now let's calculate the post filtered data and compare them.
+#### Table summary
+
+Let's summarize the number of reads before and after decontamination and filtering. We calculated the pre-filtered data above, so now let's calculate the post filtered data and compare them
 
 ```{r}
 
@@ -2379,6 +2447,25 @@ sample_depths_decontam_filter <- microbiome::readcount(phylo_eDNA_decontam_filte
   tibble::rownames_to_column(var = "fullID")
 
 colnames(sample_depths_decontam_filter) <- c("fullID", "reads_postfilter")
+
+# Calculate the total ASVs by counting the number of rows 
+num_asvs_vec_filter <- c(nrow(phyloseq::otu_table(phylo_eDNA_decontam_filtered)))  
+names(num_asvs_vec_filter)[1] <- "no.taxa" 
+num_asvs_vec_filter
+
+# Total number asvs per sample 
+asv_sum_filter <- as.data.frame(colSums(phyloseq::otu_table(phylo_eDNA_decontam_filtered)!=0))  
+
+#Extract sample meta data as a separate R object 
+abundance_metadf_filter <- phyloseq::sample_data(phylo_eDNA_decontam_filtered) 
+
+#Check if vector of sample_depths & asv_sum has the same order as our metadata rows
+identical(sample_depths_decontam_filter$fullID,row.names(abundance_metadf_filter)) 
+identical(row.names(asv_sum_filter),row.names(abundance_metadf_filter))  
+
+#Add sample depths and number of ASVs to metadata data frame 
+abundance_metadf_filter[,"depth"] <- sample_depths_decontam_filter$reads_postfilter 
+abundance_metadf_filter[,"ASVs"] <- asv_sum_filter
 
 # Reads before and after decontamination together
 all_depths <- left_join(sample_depths_decontam, 
@@ -2391,12 +2478,16 @@ all_depths$reads_removed <- all_depths$reads_prefilter - all_depths$reads_postfi
 tail(all_depths)
 ```
 
-Let's create some figures to visualize read depths before and after filtering. We are going to create some new data set for plotting.
+Let's create some figures to visualize read depths before and after filtering. We'll need to do some data wrangling for plotting.
+
+#### Histograms
+
+Before filtering first.
 
 ```{r}
-### Before decontamination ----
-# Add primer variable
-sample_depths_decontam$primer <- sapply(strsplit(sample_depths_decontam$fullID, "_", fixed=TRUE), tail, 1)
+#| message: false
+
+sample_depths_decontam$primer <- sapply(strsplit(sample_depths_decontam$fullID, "_", fixed=TRUE), tail, 1) # Add primer variable
 
 #check which samples have no reads and remove
 sample_depths_decontam_zero <- sample_depths_decontam %>% subset(sample_depths_decontam == 0)
@@ -2412,11 +2503,12 @@ print(mu_primer)
 ```
 
 ```{r}
+
 reads_histo <- ggplot(sample_depths_decontam_nozero, aes(x=reads_prefilter, fill = primer, colour = primer)) + 
   geom_histogram(bins = 60, alpha = 0.9, position = "dodge") + 
   geom_vline(data=mu_primer, aes(xintercept=mean, color=primer),
              linetype="dashed")+
-  facet_wrap(~primer, scale = 'free_y') +
+  facet_wrap(~primer, scale = 'free_x') +
   scale_color_manual(values=c("grey50","grey50"))+
   scale_fill_manual(values=c("#96E6B3","#E5A361"))+
   xlab("Sample depth") + ylab("Sample frequency") +
@@ -2426,6 +2518,61 @@ reads_histo <- ggplot(sample_depths_decontam_nozero, aes(x=reads_prefilter, fill
 
 reads_histo
 ```
+
+After filtering.
+
+```{r}
+#| message: false
+
+sample_depths_decontam_filter$primer <- sapply(strsplit(sample_depths_decontam_filter$fullID, "_", fixed=TRUE), tail, 1) # Add primer variable
+
+#check which samples have no reads and remove
+sample_depths_decontam_filter_zero <- sample_depths_decontam_filter %>% subset(sample_depths_decontam_filter == 0)
+sample_depths_decontam_filter_nozero <- anti_join(sample_depths_decontam_filter, sample_depths_decontam_filter_zero)
+
+#get means
+mu_primer_filter <- sample_depths_decontam_filter_nozero %>% 
+  dplyr::group_by(primer) %>% 
+  dplyr::summarise(mean = mean(reads_postfilter),
+                   SE = sd(reads_postfilter) / sqrt(n()))
+
+print(mu_primer_filter)
+```
+
+```{r}
+
+reads_histo_filter <- ggplot(sample_depths_decontam_filter_nozero, aes(x=reads_postfilter, fill = primer, colour = primer)) + 
+  geom_histogram(bins = 60, alpha = 0.9, position = "dodge") + 
+  geom_vline(data=mu_primer_filter, aes(xintercept=mean, color=primer),
+             linetype="dashed")+
+  facet_wrap(~primer, scale = 'free_x') +
+  scale_color_manual(values=c("grey50","grey50"))+
+  scale_fill_manual(values=c("#96E6B3","#E5A361"))+
+  xlab("Sample depth") + ylab("Sample frequency") +
+  labs(fill = "Primer", colour = "Primer")+
+  #xlim(0, 200000) + #can limited extreme values to view pattern better
+  theme_classic()
+
+reads_histo_filter
+```
+
+Join them together to export.
+
+```{r}
+
+reads_histo_together <- cowplot::plot_grid(reads_histo, reads_histo_filter, labels = c("a", "b"), ncol = 1)
+
+reads_histo_together
+
+#save
+ggsave(reads_histo_together, filename = "Figures/sample_depth_histogram_together.png", height = 200, width = 220, dpi = 300, units = "mm")
+```
+
+#### Reads by site
+
+Let's look at reads over sites.
+
+Before filtering first.
 
 ```{r}
 
@@ -2446,12 +2593,958 @@ reads_boxplot_sites <- ggplot2::ggplot(abundance_metadf, aes(y=depth, x=verbatim
 reads_boxplot_sites
 ```
 
+After filtering.
+
 ```{r}
 
-ggplot2::ggplot(abundance_metadf, aes(y=depth, x=shorePosition, colour = shorePosition)) +
+reads_boxplot_sites_filter <- ggplot2::ggplot(abundance_metadf_filter, aes(y=depth, x=verbatimLocality, colour = country)) +
   ggplot2::geom_boxplot() +
-  xlab("Shore height")+ ylab("Read depth") +
+  scale_x_discrete(limits = site_order)+
+  scale_colour_manual(values = c("Scotland" = "darkseagreen3",
+                                 "North Wales" = "lightpink3",
+                                 "Northeast England" = "yellow3",
+                                 "South Wales" = "lightblue",
+                                 "Southwest England" = "purple3")) +
+  xlab("Site")+ ylab("Read depth (post filtering)") +
+  labs(colour = "Region") +
   facet_wrap(~primer) +
   theme_classic() +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+reads_boxplot_sites_filter
+```
+
+Join them together to export.
+
+```{r}
+
+reads_boxplot_sites_together <- cowplot::plot_grid(reads_boxplot_sites, reads_boxplot_sites_filter, labels = c("a", "b"), ncol = 1) 
+
+reads_boxplot_sites_together  
+
+#save 
+ggsave(reads_boxplot_sites_together, filename = "Figures/reads_boxplot_sites_together.png", height = 300, width = 250, dpi = 300, units = "mm")
+```
+
+#### Reads by sample type
+
+Let's tidy the names of our sample types.
+
+```{r}
+
+abundance_metadf <- abundance_metadf %>%
+  data.frame() %>% 
+  dplyr::mutate(tidy_type_name = case_when(
+    sampleType == "field-control" ~ "Field control",
+    sampleType == "lab-extraction-control" ~ "Lab extraction control",
+    sampleType == "lab-negative-control" ~ "Lab negative control",
+    sampleType == "lab-positive-control" ~ "Lab positive control",
+    sampleType == "sample" ~ "Sample",
+    sampleType == "run-replicate" ~ "Run replicate",
+    sampleType == "failed-repeat" ~ "Failed repeat",
+    sampleType == "plate-replicate" ~ "Plate replicate",
+    TRUE ~ as.character(sampleType) # This keeps any unmatched sampleType values
+  ))
+
+abundance_metadf_filter <- abundance_metadf_filter %>%
+  data.frame() %>% 
+  dplyr::mutate(tidy_type_name = case_when(
+    sampleType == "field-control" ~ "Field control",
+    sampleType == "lab-extraction-control" ~ "Lab extraction control",
+    sampleType == "lab-negative-control" ~ "Lab negative control",
+    sampleType == "lab-positive-control" ~ "Lab positive control",
+    sampleType == "sample" ~ "Sample",
+    sampleType == "run-replicate" ~ "Run replicate",
+    sampleType == "failed-repeat" ~ "Failed repeat",
+    sampleType == "plate-replicate" ~ "Plate replicate",
+    TRUE ~ as.character(sampleType) # This keeps any unmatched sampleType values
+  ))
+
+```
+
+Before filtering.
+
+```{r}
+
+reads_boxplot_sample_types <- ggplot(abundance_metadf, aes(x=tidy_type_name, y=depth, color=tidy_type_name)) + 
+  geom_boxplot() + theme_bw() +
+  geom_jitter(alpha=0.2) +
+  scale_color_manual(values = c("Field control" = "brown", 
+                                "Lab extraction control" = "red4",
+                                "Lab negative control" = "red", 
+                                "Lab positive control" = "green3",
+                                "Sample" ="cyan4", 
+                                "Run replicate" = "lightblue3", 
+                                "Failed repeat" = "blue4", 
+                                "Plate replicate" = "lightblue4"), na.value = "darkgrey") +
+  #facet_wrap(~primer, scales = "free_y") +
+  scale_x_discrete(limits = control_order_tidy)+
+  xlab("Sample type") + ylab("Read depth") +
+  labs(colour = "Sample type") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle=45, h=1),
+        legend.position = "none")
+
+reads_boxplot_sample_types
+```
+
+### Comparing replicates
+
+Define replicates.
+
+```{r}
+
+# Subset replicates and their counter parts
+phylo_replicates_pairs = subset_samples(phylo_eDNA_decontam_filtered, 
+                                        pairedRepLogical == TRUE) 
+
+#further subs
+phylo_replicates = subset_samples(phylo_eDNA_decontam_filtered, 
+                                  sampleType == "run-replicate" | sampleType == "plate-replicate") 
+
+phylo_run_replicates = subset_samples(phylo_eDNA_decontam_filtered, 
+                                      sampleType == "run-replicate")
+
+phylo_sample_replicates = subset_samples(phylo_eDNA_decontam_filtered,
+                                         sampleType == "plate-replicate")  
+
+replicate_names <- unique(sample_data(phylo_replicates)$fullID)
+head(replicate_names)
+
+##Clean out taxa/ASV columns that are no longer present
+phylo_replicates <- prune_taxa(taxa_sums(phylo_replicates) > 0, phylo_replicates) 
+
+#How abundant are the ASVs in the controls?	
+plot(sort(taxa_sums(phylo_replicates), TRUE), type="h")
+
+#What's in them?
+plot_bar(phylo_replicates, "fullID", fill = "phylum")
+
+#Find taxa that are shared among a certain number of controls
+replicates_shared_taxa = filter_taxa(phylo_replicates, 
+                                     function(x) sum(x >= 1) == (2), TRUE)
+
+plot_bar(replicates_shared_taxa, "fieldID", fill = "phylum")
+```
+
+#### Between runs
+
+```{r}
+
+#Transform abundance table to a relative abundance (compositional) table
+pseq_relabund <- microbiome::transform(phylo_replicates_pairs, "compositional")
+
+#Phylum phyloseq
+phylum_pseq <- microbiome::aggregate_rare(pseq_relabund, "phylum",
+                                          detection = 0.01, prevalence = 10/100)
+
+# Sort lists of replicates
+sample_order_run1v2 <- c(
+  "PHD1-SCH01-04rep_18S",
+  "PHD2-SCH01-04rep_18S",
+  "PHD1-SCH01-04rep_CO1",
+  "PHD2-SCH01-04rep_CO1",
+  "PHD1-SCH03-05rep_18S",
+  "PHD2-SCH03-05rep_18S",
+  "PHD1-SCH04-09rep_18S",
+  "PHD2-SCH04-09rep_18S",
+  "PHD1-SCH04-09rep_CO1",
+  "PHD2-SCH04-09rep_CO1",
+  "PHD1-SCH07-02rep_18S",
+  "PHD2-SCH07-02rep_18S",
+  "PHD1-SCH07-02rep_CO1",
+  "PHD2-SCH07-02rep_CO1",
+  "PHD1-SW01-06rep_18S",
+  "PHD2-SW01-06rep_18S",
+  "PHD1-SW01-06rep_CO1",
+  "PHD2-SW01-06rep_CO1",
+  "PHD1-SW03-08rep_18S",
+  "PHD2-SW03-08rep_18S",
+  "PHD1-SW03-08rep_CO1",
+  "PHD2-SW03-08rep_CO1",
+  "PHD1-SW05-01rep_18S"
+  #"PHD2-SW05-01rep_18S",
+  #"PHD1-SW05-01rep_CO1",
+  #"PHD2-SW05-01rep_CO1",
+  #"PHD1-SW07-03rep_18S",
+  #"PHD2-SW07-03rep_18S",
+  #"PHD1-SW07-03rep_CO1",
+  #"PHD2-SW07-03rep_CO1"
+)
+
+sample_order_run1v3 <- c(
+  "PHD1-SCH01-04rep_CO1",
+  "PHD3-SCH01-04rep_CO1",
+  "PHD1-SCH04-09rep_CO1",
+  "PHD3-SCH04-09rep_CO1",
+  "PHD1-SCH07-02rep_CO1",
+  "PHD3-SCH07-02rep_CO1",
+  "PHD1-SW01-06rep_CO1",
+  "PHD3-SW01-06rep_CO1",
+  "PHD1-SW03-08rep_CO1",
+  "PHD3-SW03-08rep_CO1",
+  "PHD1-SW05-01rep_CO1",
+  "PHD3-SW05-01rep_CO1",
+  "PHD1-SW07-03rep_CO1",
+  "PHD3-SW07-03rep_CO1"
+)
+
+sample_order_run2v3 <- c(
+  "PHD2-CN01-01_CO1",
+  "PHD3-CN01-01rep_CO1",
+  "PHD2-CN01-02_CO1",
+  "PHD3-CN01-02rep_CO1",
+  "PHD2-CN01-03_CO1",
+  "PHD3-CN01-03rep_CO1",
+  "PHD2-CN01-04_CO1",
+  "PHD3-CN01-04rep_CO1",
+  "PHD2-CN01-05_CO1",
+  "PHD3-CN01-05rep_CO1",
+  "PHD2-CN01-06_CO1",
+  "PHD3-CN01-06rep_CO1",
+  "PHD2-CN01-07_CO1",
+  "PHD3-CN01-07rep_CO1",
+  "PHD2-CN01-08_CO1",
+  "PHD3-CN01-08rep_CO1"
+)
+```
+
+Average read depths over the difference runs.
+
+```{r}
+
+#| warning: false
+
+# Compute read depth (total reads per sample)
+read_depth_reps <- sample_sums(phylo_replicates)  # Sum of reads per sample
+
+# Extract sample metadata
+metadata_reps <- sample_data(phylo_replicates) %>% as.data.frame()
+
+# Ensure "projectID" is numeric (assuming it represents the year)
+metadata_reps$projectID <- as.factor(metadata_reps$projectID) 
+metadata_reps$fieldID <- as.factor(metadata_reps$fieldID) 
+
+# Merge read depth into metadata
+metadata_reps$ReadDepth <- read_depth_reps
+
+# Plot the average read depth over time
+ggplot(metadata_reps, aes(x = projectID, y = ReadDepth, colour = projectID)) +
+  geom_boxplot()+
+  labs(x = "Year",
+       y = "Average Read Depth") +
+  theme_minimal()
+
+#depth sample label order
+depth_label_order <- c(
+  "PHD1-SCH01-04rep",
+  "PHD2-SCH01-04rep",
+  "PHD3-SCH01-04rep",
+  "PHD1-SCH03-05rep",
+  "PHD2-SCH03-05rep",
+  "PHD1-SCH04-09rep",
+  "PHD2-SCH04-09rep",
+  "PHD3-SCH04-09rep",
+  "PHD1-SCH07-02rep",
+  "PHD2-SCH07-02rep",
+  "PHD3-SCH07-02rep",
+  "PHD1-SW01-06rep",
+  "PHD2-SW01-06rep",
+  "PHD3-SW01-06rep",
+  "PHD1-SW03-08rep",
+  "PHD2-SW03-08rep",
+  "PHD3-SW03-08rep",
+  "PHD1-SW05-01rep",
+  "PHD2-SW05-01rep",
+  "PHD3-SW05-01rep",
+  "PHD1-SW07-03rep",
+  "PHD2-SW07-03rep",
+  "PHD3-SW07-03rep",
+  "PHD3-CN01-01rep",
+  "PHD3-CN01-02rep",
+  "PHD3-CN01-03rep",
+  "PHD3-CN01-04rep",
+  "PHD3-CN01-05rep",
+  "PHD3-CN01-06rep",
+  "PHD3-CN01-07rep",
+  "PHD3-CN01-08rep"
+)
+
+# Plot the average read depth over time
+ggplot(metadata_reps, aes(x = fieldID, y = ReadDepth, fill = projectID)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Sample",
+       y = "Average Read Depth") +
+  theme_minimal()  + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) + # Slant x-axis labels at 45 degrees
+  scale_x_discrete(limits = c(depth_label_order))
+```
+
+Comparison taxa plot for run 1 vs run 2.
+
+```{r}
+
+#| warning: false
+
+run_replicates_taxa_plot_1v2 <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(sample_order_run1v2))
+
+run_replicates_taxa_plot_1v2
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_1v2_curated_98.png", plot = run_replicates_taxa_plot_1v2,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 350)
+```
+
+Dissimilarity for run 1 vs run 2.
+
+```{r}
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_run1v2_phylo <- phylo_eDNA_decontam_filtered %>% 
+  subset_samples(fullID %in% sample_order_run1v2) # subset phylo
+
+run_replicates_dis_jaccard_1v2 <- as.matrix(distance(replicates_run1v2_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_1v2)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle_all) == sapply(longData$Var2, extract_middle_all), TRUE, FALSE)
+
+# Extract the last section of the sample names
+longData$primerVar1 <- sub(".*_(18S|CO1)$", "\\1", longData$Var1)
+longData$primerVar2 <- sub(".*_(18S|CO1)$", "\\1", longData$Var2)
+longData_sameprimer <- filter(longData, primerVar1 == primerVar2)
+
+#Individual primer datasets
+longData18S <- subset(longData_sameprimer, primerVar1 == "18S")
+longDataCO1 <- subset(longData_sameprimer, primerVar1 == "CO1")
+
+#plot matrix (CO1)
+dis_CO1_matrix_run1v2 <- ggplot(longDataCO1, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longDataCO1, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (Run 1 vs Run 2)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_run1v2
+
+ggsave(filename = "Figures/dis_CO1_matrix_run1v2_curated_98.png", plot = dis_CO1_matrix_run1v2 ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+
+#plot matrix (18S)
+dis_18S_matrix_run1v2 <- ggplot(longData18S, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData18S, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "green4", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (Run 1 vs Run 2)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_18S_matrix_run1v2
+
+ggsave(filename = "Figures/dis_18S_matrix_run1vs_curated_98.png", plot = dis_18S_matrix_run1v2 ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+Same again for run 1 vs run 3
+
+```{r}
+
+### Comparison taxa plot
+run_replicates_taxa_plot_1v3 <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(sample_order_run1v3))
+
+run_replicates_taxa_plot_1v3
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_1v3_curated_98.png", plot = run_replicates_taxa_plot_1v3,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 350)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_run1v3_phylo <- phylo_eDNA_decontam_filtered %>% 
+  subset_samples(fullID %in% sample_order_run1v3) # subset phylo
+
+run_replicates_dis_jaccard_1v3 <- as.matrix(distance(replicates_run1v3_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_1v3)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates (same as previous)
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle) == sapply(longData$Var2, extract_middle), TRUE, FALSE)
+
+#plot matrix (CO1)
+dis_CO1_matrix_run1v3 <- ggplot(longData, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (Run 1 vs Run 3)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_run1v3
+
+ggsave(filename = "Figures/dis_CO1_matrix_run1v3_curated_98.png", plot = dis_CO1_matrix_run1v3 ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+For run 2 and run 3.
+
+```{r}
+
+# Comparison taxa plot
+run_replicates_taxa_plot_2v3 <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(sample_order_run2v3))
+
+run_replicates_taxa_plot_2v3
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_2v3_curated_98.png", plot = run_replicates_taxa_plot_2v3,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 450)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_run2v3_phylo <- phylo_eDNA_decontam_filtered %>% subset_samples(fullID %in% sample_order_run2v3) # subset phylo
+run_replicates_dis_jaccard_2v3 <- as.matrix(distance(replicates_run2v3_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_2v3)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle_CO1) == sapply(longData$Var2, extract_middle_CO1), TRUE, FALSE)
+
+#plot matrix (CO1)
+dis_CO1_matrix_run2v3 <- ggplot(longData, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (Run 2 vs Run 3)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_run2v3
+
+ggsave(filename = "Figures/dis_CO1_matrix_run2v3_curated_98.png", plot = dis_CO1_matrix_run2v3 ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+By site.
+
+```{r}
+
+
+SCH_reps <- c(
+  "PHD1-SCH01-04_CO1",
+  "PHD1-SCH01-04rep_CO1",
+  "PHD1-SCH04-09_CO1",
+  "PHD1-SCH04-09rep_CO1",
+  "PHD1-SCH07-02_CO1",
+  "PHD1-SCH07-02rep_CO1",
+  "PHD1-SCH01-04_18S",
+  "PHD1-SCH01-04rep_18S",
+  "PHD1-SCH03-05_18S",
+  "PHD1-SCH03-05rep_18S",
+  "PHD1-SCH04-09_18S",
+  "PHD1-SCH04-09rep_18S",
+  "PHD1-SCH07-02_18S",
+  "PHD1-SCH07-02rep_18S"
+)
+
+SW_reps <- c(
+  "PHD1-SW01-06_CO1",
+  "PHD1-SW01-06rep_CO1",
+  "PHD1-SW03-08_CO1",
+  "PHD1-SW03-08rep_CO1",
+  "PHD1-SW05-01_CO1",
+  "PHD1-SW05-01rep_CO1",
+  "PHD1-SW05-02_CO1",
+  "PHD1-SW05-02rep_CO1",
+  "PHD1-SW05-03_CO1",
+  "PHD1-SW05-03rep_CO1",
+  "PHD1-SW07-03_CO1",
+  "PHD1-SW07-03rep_CO1",
+  "PHD1-SW01-06_18S",
+  "PHD1-SW01-06rep_18S",
+  "PHD1-SW03-08_18S",
+  "PHD1-SW03-08rep_18S",
+  "PHD1-SW05-01_18S",
+  "PHD1-SW05-01rep_18S",
+  "PHD1-SW05-02_18S",
+  "PHD1-SW07-03_18S",
+  "PHD1-SW07-03rep_18S"
+)
+
+NW_reps <- c(
+  "PHD2-NW01-02_CO1",
+  "PHD2-NW01-02rep_CO1", 
+  "PHD2-NW03-08_CO1",
+  "PHD2-NW03-08rep_CO1",
+  "PHD2-NW06-02_CO1",
+  "PHD2-NW06-02rep_CO1",
+  "PHD2-NW01-02_18S",
+  "PHD2-NW01-02rep_18S", 
+  "PHD2-NW03-08_18S",
+  "PHD2-NW03-08rep_18S",
+  "PHD2-NW06-02_18S",
+  "PHD2-NW06-02rep_18S"
+  )
+
+CN_reps <- c(
+  "PHD2-CN02-09_CO1",
+  "PHD2-CN02-09rep_CO1",
+  "PHD2-CN04-05_CO1",
+  "PHD2-CN04-05rep_CO1",
+  "PHD2-CN05-08_CO1",
+  "PHD2-CN05-08rep_CO1",
+  "PHD2-CN02-09_18S",
+  "PHD2-CN02-09rep_18S",
+  "PHD2-CN04-05_18S",
+  "PHD2-CN04-05rep_18S",
+  "PHD2-CN05-08_18S",
+  "PHD2-CN05-08rep_18S"
+  )
+
+NE_reps <- c(  
+  "PHD2-NE02-09_CO1",
+  "PHD2-NE02-09rep_CO1",
+  "PHD2-NE04-05_CO1",
+  "PHD2-NE04-05rep_CO1",
+  "PHD2-NE05-08_CO1",
+  "PHD2-NE05-08rep_CO1",
+  "PHD2-NE02-09_18S",
+  "PHD2-NE02-09rep_18S",
+  "PHD2-NE04-05_18S",
+  "PHD2-NE04-05rep_18S",
+  "PHD2-NE05-08_18S",
+  "PHD2-NE05-08rep_18S")
+```
+
+South Wales
+
+```{r}
+
+#### Comparison taxa plot
+run_replicates_taxa_plot_SW <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(SW_reps))
+
+run_replicates_taxa_plot_SW 
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_SW_curated_98.png", plot = run_replicates_taxa_plot_SW,
+       device = "png", dpi = 300, units = "mm", height = 150, width = 250)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_SW_phylo <- phylo_eDNA_decontam_filtered %>% subset_samples(fullID %in% SW_reps) # subset phylo
+run_replicates_dis_jaccard_SW <- as.matrix(distance(replicates_SW_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_SW)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle) == sapply(longData$Var2, extract_middle), TRUE, FALSE)
+
+# Extract the last section of the sample names
+longData$primerVar1 <- sub(".*_(18S|CO1)$", "\\1", longData$Var1)
+longData$primerVar2 <- sub(".*_(18S|CO1)$", "\\1", longData$Var2)
+longData_sameprimer <- filter(longData, primerVar1 == primerVar2)
+
+#Individual primer datasets
+longData18S <- subset(longData_sameprimer, primerVar1 == "18S")
+longDataCO1 <- subset(longData_sameprimer, primerVar1 == "CO1")
+
+#plot matrix (CO1)
+dis_CO1_matrix_SW <- ggplot(longDataCO1, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longDataCO1, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (SW)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_SW
+
+ggsave(filename = "Figures/dis_CO1_matrix_SW_curated_98.png", plot = dis_CO1_matrix_SW ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+
+#plot matrix (18S)
+dis_18S_matrix_SW <- ggplot(longData18S, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData18S, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "green4", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (SW)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_18S_matrix_SW
+
+ggsave(filename = "Figures/dis_18S_matrix_SW_curated_98.png", plot = dis_18S_matrix_SW ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+Scotland
+
+```{r}
+
+#### Comparison taxa plot 
+run_replicates_taxa_plot_SCH <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(SCH_reps))
+
+run_replicates_taxa_plot_SCH
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_SCH_curated_98.png", plot = run_replicates_taxa_plot_SCH,
+       device = "png", dpi = 300, units = "mm", height = 150, width = 250)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_SCH_phylo <- phylo_eDNA_decontam_filtered %>% subset_samples(fullID %in% SCH_reps) # subset phylo
+run_replicates_dis_jaccard_SCH <- as.matrix(distance(replicates_SCH_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_SCH)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle) == sapply(longData$Var2, extract_middle), TRUE, FALSE)
+
+# Extract the last section of the sample names
+longData$primerVar1 <- sub(".*_(18S|CO1)$", "\\1", longData$Var1)
+longData$primerVar2 <- sub(".*_(18S|CO1)$", "\\1", longData$Var2)
+longData_sameprimer <- filter(longData, primerVar1 == primerVar2)
+
+#Individual primer datasets
+longData18S <- subset(longData_sameprimer, primerVar1 == "18S")
+longDataCO1 <- subset(longData_sameprimer, primerVar1 == "CO1")
+
+#plot matrix (CO1)
+dis_CO1_matrix_SCH <- ggplot(longDataCO1, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longDataCO1, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (SCH)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_SCH
+
+ggsave(filename = "Figures/dis_CO1_matrix_SCH_curated_98.png", plot = dis_CO1_matrix_SCH ,
+       device = "png", dpi = 300, units = "mm", height = 150, width = 250)
+
+#plot matrix (18S)
+dis_18S_matrix_SCH<- ggplot(longData18S, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData18S, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "green4", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (SCH)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_18S_matrix_SCH
+
+ggsave(filename = "Figures/dis_18S_matrix_SCH_curated_98.png", plot = dis_18S_matrix_SCH ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+Cornwall
+
+```{r}
+
+#### Comparison taxa plot 
+run_replicates_taxa_plot_CN <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(CN_reps))
+
+run_replicates_taxa_plot_CN
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_CN_curated_98.png", plot = run_replicates_taxa_plot_CN,
+       device = "png", dpi = 300, units = "mm", height = 150, width = 250)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_CN_phylo <- phylo_eDNA_decontam_filtered %>% subset_samples(fullID %in% CN_reps) # subset phylo
+run_replicates_dis_jaccard_CN <- as.matrix(distance(replicates_CN_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_CN)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle) == sapply(longData$Var2, extract_middle), TRUE, FALSE)
+
+# Extract the last section of the sample names
+longData$primerVar1 <- sub(".*_(18S|CO1)$", "\\1", longData$Var1)
+longData$primerVar2 <- sub(".*_(18S|CO1)$", "\\1", longData$Var2)
+longData_sameprimer <- filter(longData, primerVar1 == primerVar2)
+
+#Individual primer datasets
+longData18S <- subset(longData_sameprimer, primerVar1 == "18S")
+longDataCO1 <- subset(longData_sameprimer, primerVar1 == "CO1")
+
+#plot matrix (CO1)
+dis_CO1_matrix_CN <- ggplot(longDataCO1, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longDataCO1, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (CN)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_CN
+
+ggsave(filename = "Figures/dis_CO1_matrix_CN_curated_98.png", plot = dis_CO1_matrix_CN ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+
+#plot matrix (18S)
+dis_18S_matrix_CN <- ggplot(longData18S, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData18S, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "green4", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (CN)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_18S_matrix_CN
+
+ggsave(filename = "Figures/dis_18S_matrix_CN_curated_98.png", plot = dis_18S_matrix_CN ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+Northeast England
+
+```{r}
+
+#### Comparison taxa plot 
+run_replicates_taxa_plot_NE <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(NE_reps))
+
+run_replicates_taxa_plot_NE
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_NE_curated_98.png", plot = run_replicates_taxa_plot_NE,
+       device = "png", dpi = 300, units = "mm", height = 150, width = 250)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_NE_phylo <- phylo_eDNA_decontam_filtered %>% subset_samples(fullID %in% NE_reps) # subset phylo
+run_replicates_dis_jaccard_NE <- as.matrix(distance(replicates_NE_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_NE)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle) == sapply(longData$Var2, extract_middle), TRUE, FALSE)
+
+# Extract the last section of the sample names
+longData$primerVar1 <- sub(".*_(18S|CO1)$", "\\1", longData$Var1)
+longData$primerVar2 <- sub(".*_(18S|CO1)$", "\\1", longData$Var2)
+longData_sameprimer <- filter(longData, primerVar1 == primerVar2)
+
+#Individual primer datasets
+longData18S <- subset(longData_sameprimer, primerVar1 == "18S")
+longDataCO1 <- subset(longData_sameprimer, primerVar1 == "CO1")
+
+#plot matrix (CO1)
+dis_CO1_matrix_NE <- ggplot(longDataCO1, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longDataCO1, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (NE)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_NE
+
+ggsave(filename = "Figures/dis_CO1_matrix_NE_curated_98.png", plot = dis_CO1_matrix_NE,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+
+#plot matrix (18S)
+dis_18S_matrix_NE <- ggplot(longData18S, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData18S, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "green4", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (NE)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_18S_matrix_NE
+
+ggsave(filename = "Figures/dis_18S_matrix_NE_curated_98.png", plot = dis_18S_matrix_NE ,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+North Wales
+
+```{r}
+
+#### Comparison taxa plot 
+run_replicates_taxa_plot_NW <- microbiome::plot_composition(phylum_pseq) + 
+  xlab("Sample") + ylab("Relative abundance")+
+  scale_x_discrete(limits = c(NW_reps))
+
+run_replicates_taxa_plot_NW
+
+ggsave(filename = "Figures/run_replicates_taxa_plot_NW_curated_98.png", plot = run_replicates_taxa_plot_NW,
+       device = "png", dpi = 300, units = "mm", height = 150, width = 250)
+
+#### Dissimilarity 
+
+#Jaccard dissimilarity (based on P/A) - high value = most different
+replicates_NW_phylo <- phylo_eDNA_decontam_filtered %>% subset_samples(fullID %in% NW_reps) # subset phylo
+run_replicates_dis_jaccard_NW <- as.matrix(distance(replicates_NW_phylo, "jaccard", binary = TRUE)) # run analyses
+
+# format matrix to long
+longData<-melt(run_replicates_dis_jaccard_NW)
+longData<-longData[longData$value!=0,]
+
+# Add TRUE or FALSE variable for replicates
+longData$replicate <- ifelse(sapply(longData$Var1, extract_middle) == sapply(longData$Var2, extract_middle), TRUE, FALSE)
+
+# Extract the last section of the sample names
+longData$primerVar1 <- sub(".*_(18S|CO1)$", "\\1", longData$Var1)
+longData$primerVar2 <- sub(".*_(18S|CO1)$", "\\1", longData$Var2)
+longData_sameprimer <- filter(longData, primerVar1 == primerVar2)
+
+#Individual primer datasets
+longData18S <- subset(longData_sameprimer, primerVar1 == "18S")
+longDataCO1 <- subset(longData_sameprimer, primerVar1 == "CO1")
+
+#plot matrix (CO1)
+dis_CO1_matrix_NW <- ggplot(longDataCO1, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longDataCO1, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "coral3", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (NW)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_CO1_matrix_NW
+
+ggsave(filename = "Figures/dis_CO1_matrix_NW_curated_98.png", plot = dis_CO1_matrix_NW,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+
+#plot matrix (18S)
+dis_18S_matrix_NW <- ggplot(longData18S, aes(x = Var2, y = Var1)) + 
+  geom_tile(aes(fill = value), color = "white") +
+  geom_point(data = subset(longData18S, replicate == TRUE), 
+             aes(x = Var2, y = Var1), 
+             color = "black", size = 8, shape = 0, fill = NA) +
+  geom_text(aes(label = round(value, 2)), color = "black", size = 3) + # Add text labels
+  scale_fill_gradient(low = "green4", high = "grey95", name = "Jaccard Dissimilarity") +
+  labs(x = "Samples", y = "Samples", title = "Matrix of Jaccard Dissimilarity CO1 (NW)") +
+  theme_bw() + 
+  theme(axis.text.x = element_text(size = 9, angle = 90, vjust = 0.3),
+        axis.text.y = element_text(size = 9),
+        plot.title = element_text(size = 11))
+
+dis_18S_matrix_NW
+
+ggsave(filename = "Figures/dis_18S_matrix_NW_curated_98.png", plot = dis_18S_matrix_NW,
+       device = "png", dpi = 300, units = "mm", height = 200, width = 250)
+```
+
+Join them together for export.
+
+```{r}
+
+#| message: false
+
+all_region_reps <- cowplot::plot_grid(
+  run_replicates_taxa_plot_NW + theme(legend.position = "none"),
+  run_replicates_taxa_plot_SW + theme(legend.position =
+                                        "none"),
+  run_replicates_taxa_plot_SCH + theme(legend.position =
+                                         "none"),
+  run_replicates_taxa_plot_CN ,
+  run_replicates_taxa_plot_NE + theme(legend.position =
+                                        "none"),
+  labels = c("a", "b", "c", "d", "e"),
+  ncol = 2,
+  align = "hv"
+)
+
+all_region_reps
+
+ggsave(filename = "Figures/all_region_reps.png", plot = all_region_reps,
+       device = "png", dpi = 300, units = "mm", height = 350, width = 270)
 ```
