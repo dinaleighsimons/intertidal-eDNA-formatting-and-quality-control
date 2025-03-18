@@ -982,6 +982,8 @@ Before we convert our data into a `phyloseq` object and filter our target taxa, 
 
 ```{r}
 
+#| label: explore-functional-groups
+
 # add pa variable and remove absences
 eDNA_long_data_final_pa <- eDNA_long_data_final %>%
   mutate(pa = ifelse(reads > 0, 1, 0))
@@ -4429,4 +4431,4 @@ ggsave(filename = "Figures/types_boxplot.png", plot = types_boxplot,
 
 ## Concluding remarks
 
-We have now tidied, decontaminated, and filtered our eDNA metabarcoding data and used a variety of visualizations to quality check our data. Further ecological analyses will be presented in seperate Markdown documents usig the data generated in this workflow.
+We have now tidied, decontaminated, and filtered our eDNA metabarcoding data and used a variety of visualizations to quality check our data. Further ecological analyses will be presented in seperate Markdown documents using the data generated in this workflow.
