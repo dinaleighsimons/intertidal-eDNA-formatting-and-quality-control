@@ -5,15 +5,13 @@ embed-resources: true
 editor: visual
 author: Dina-Leigh Simons
 toc: true
+warning: false
+message: false
 ---
 
 ## Introduction
 
-This pipeline aims to bridge outputs from the bioinformatics processing (in this case, DADA2) to ecological community analyses. It collates resources from numerous different locations.
-
-### References
-
--   <https://metabarfactory.github.io/metabaR/articles/metabaRF-vignette.html>
+This pipeline aims to bridge outputs from the bioinformatics processing (in this case, DADA2) to ecological community analyses.
 
 ## Load packages
 
@@ -2514,7 +2512,7 @@ First, let's stop scientific notation being presented in plots.
 options(scipen=5)
 ```
 
-Let's set-up some functions we'll use later on to extract random pieces of information from our data. Note: these functions only work currently for the format of IDs I have in this data set. They made need altering for other data sets.
+Let's set-up some functions we'll use later on to extract pieces of information from our data. Note: these functions only work currently for the format of IDs in this data set. They made need altering for other data sets.
 
 ```{r}
 
@@ -2652,7 +2650,7 @@ abundance_metadf_predecontam[,"depth"] <- sample_depths_predecontam$reads_predec
 abundance_metadf_predecontam[,"ASVs"] <- asv_sum_predecontam
 ```
 
-Post-filtered next.
+Post-filtered.
 
 ```{r}
 
@@ -2895,7 +2893,7 @@ reads_boxplot_sites <- ggplot2::ggplot(abundance_metadf, aes(y=depth, x=verbatim
 reads_boxplot_sites
 ```
 
-After filtering.
+Post-filtering.
 
 ```{r}
 
@@ -2937,6 +2935,8 @@ ggsave(reads_boxplot_sites_together, filename = "Figures/reads_boxplot_sites_tog
 Let's tidy the names of our sample types.
 
 ```{r}
+
+#| label: tidy-sample-type-names
 
 abundance_metadf_predecontam <- abundance_metadf_predecontam %>%
   data.frame() %>% 
@@ -2986,6 +2986,8 @@ Before decontamination.
 
 ```{r}
 
+#| label: reads-boxplot-sample-types-predecontam 
+
 reads_boxplot_sample_types_predecontam <- ggplot(abundance_metadf_predecontam, aes(x=tidy_type_name, y=depth, color=tidy_type_name)) + 
   geom_boxplot() + theme_bw() +
   geom_jitter(alpha=0.2) +
@@ -3008,9 +3010,11 @@ reads_boxplot_sample_types_predecontam <- ggplot(abundance_metadf_predecontam, a
 reads_boxplot_sample_types_predecontam
 ```
 
-Before filtering. We shouldn't see negative or positive controls here anymore.
+Pre-filtering. We shouldn't see negative or positive controls here anymore.
 
 ```{r}
+
+#| label: reads-boxplot-sample-types-prefilter
 
 reads_boxplot_sample_types <- ggplot(abundance_metadf, aes(x=tidy_type_name, y=depth, color=tidy_type_name)) + 
   geom_boxplot() + theme_bw() +
@@ -3040,6 +3044,8 @@ Pre-decontamination.
 
 ```{r}
 
+#| label: asv-boxplot-sample-types-predecontam 
+
 ASVs_boxplot_sample_types_predecontam <- ggplot(abundance_metadf_predecontam, aes(x=tidy_type_name, y=ASVs, color=tidy_type_name)) +
   geom_boxplot() + theme_classic() +
   geom_jitter(alpha=0.2) +
@@ -3062,6 +3068,8 @@ ASVs_boxplot_sample_types_predecontam
 Pre-filtering
 
 ```{r}
+
+#| label: asv-boxplot-sample-types-prefilter 
 
 ASVs_boxplot_sample_types_decontam <- ggplot(abundance_metadf, aes(x=tidy_type_name, y=ASVs, color=tidy_type_name)) +
   geom_boxplot() + theme_classic() +
@@ -3086,6 +3094,8 @@ Let's make a plot to show the raw reads and ASVs.
 
 ```{r}
 
+#| label: asv-reads-boxplot 
+
 ASVs_reads_sampletype <- cowplot::plot_grid(ASVs_boxplot_sample_types_predecontam, reads_boxplot_sample_types_predecontam, labels = c("a", "b", ncol = 2), rel_widths = c(1,1.1))
 
 ASVs_reads_sampletype
@@ -3099,6 +3109,7 @@ We can also look at number of taxa in a scatter.
 ```{r}
 
 #| message: false
+#| label: asvs-scatter-sample-types-predecontam 
 
 ASV_reads_scatter_predecontam <- ggplot(abundance_metadf_predecontam, aes(x=depth, y=ASVs, color = tidy_type_name)) +
   geom_point() + 
@@ -3404,7 +3415,7 @@ ggsave(filename = "Figures/dis_18S_matrix_run1vs_curated_98.png", plot = dis_18S
        device = "png", dpi = 300, units = "mm", height = 200, width = 250)
 ```
 
-Same again for run 1 vs run 3
+Same again for run 1 vs run 3.
 
 ```{r}
 
@@ -3513,6 +3524,8 @@ ggsave(filename = "Figures/dis_CO1_matrix_run2v3_curated_98.png", plot = dis_CO1
 ```
 
 #### Within runs (by site) 
+
+We first set the order our our samples within each region.
 
 ```{r}
 
@@ -3978,7 +3991,7 @@ Join comp plots together for export.
 
 ```{r}
 
-#| message: false
+#| label: join-run-reps-plot
 
 all_region_reps <- cowplot::plot_grid(
   run_replicates_taxa_plot_NW + theme(legend.position = "none"),
@@ -4002,12 +4015,21 @@ ggsave(filename = "Figures/all_region_reps.png", plot = all_region_reps,
 
 #### Within shore heights
 
+We need to get a list of sites for the following loop.
+
 ```{r}
+
+#| label: side-ids-get
 
 site_ids <- unique(sample_data(phylo_eDNA_decontam_filtered)$localityID) %>% na.omit() # Add more site IDs as needed   
 ```
 
+Similar to above, we need to calculate the relative abundances, but this time for the whole data set.
+
 ```{r}
+
+#| label: calculate-relative-abundance
+
 #Transform abundance table to a relative abundance (compositional) table
 pseq_relabund <- microbiome::transform(phylo_eDNA_decontam_filtered, "compositional")
 
@@ -4015,7 +4037,11 @@ pseq_relabund <- microbiome::transform(phylo_eDNA_decontam_filtered, "compositio
 phylum_pseq <- microbiome::aggregate_taxa(pseq_relabund, "phylum", verbose = FALSE)
 ```
 
+Generate plots for COI samples.
+
 ```{r}
+
+#| label: CO1-field-rep-comp-plots
 
 #CO1 plots
 # Define a function to generate and save the taxa plot for a given site
@@ -4056,7 +4082,11 @@ for (site_id in site_ids) {
 }
 ```
 
+And for 18S samples.
+
 ```{r}
+
+#| label: 18S-field-rep-comp-plots
 
 #18S plots
 # Define a function to generate and save the taxa plot for a given site
@@ -4090,7 +4120,11 @@ for (site_id in site_ids) {
 
 ```
 
+Now dissimilarity for both primers.
+
 ```{r}
+
+#| label: dis-field-rep-plots
 
 generate_dis_plot <- function(site_id) {
   
@@ -4171,16 +4205,21 @@ for (site_id in site_ids) {
 }
 ```
 
-#### Overall visualization of dissimailrity 
+#### Overall visualization of replicate dissimilarity 
+
+Let's compare average dissimilarity across different replicate comparisons.
 
 ```{r}
+
+#| label: subset-replicates
 
 phylo_replicates_pairs = subset_samples(phylo_eDNA_decontam_filtered, pairedRepLogical == TRUE) 
 phylo_replicates_pairs
 ```
 
 ```{r}
-### Jaccard ----
+
+#| label: jaccard-replicate-calculate
 
 # Identify the logical variable indicating replicates
 jaccard_dissimilarity<- as.matrix(distance(phylo_replicates_pairs, "jaccard", binary = TRUE)) # run analyses
@@ -4257,6 +4296,8 @@ averages
 
 ```{r}
 
+#| label: jaccard-replicate-plot
+
 compare_reps_jaccard_types <- ggplot(longData, aes(x = replicate, y = value, fill = overallType)) +
   geom_boxplot() +
   labs(x = "Replicate",
@@ -4277,7 +4318,7 @@ compare_reps_jaccard_types <- ggplot(longData, aes(x = replicate, y = value, fil
 
 ```{r}
 
-### Bray ----
+#| label: bray-replicate-calculate
 
 # Identify the logical variable indicating replicates
 bray_dissimilarity<- as.matrix(distance(phylo_replicates_pairs, "bray", binary = TRUE)) # run analyses
@@ -4353,10 +4394,13 @@ averages
 ```
 
 ```{r}
+
+#| label: bray-replicate-plot
+
 compare_reps_bray_types <- ggplot(longData, aes(x = replicate, y = value, fill = overallType)) +
   geom_boxplot() +
   labs(x = "Replicate",
-       y = "Jaccard Dissimilarity") +
+       y = "Bray Dissimilarity") +
   scale_fill_manual(values = c("plate-replicate-run-replicate" = "lightblue", 
                                "plate-replicate-sample" = "lightgreen",
                                "run-replicate-run-replicate" = "gold",
@@ -4370,7 +4414,11 @@ compare_reps_bray_types <- ggplot(longData, aes(x = replicate, y = value, fill =
 #theme(legend.position = "none")
 ```
 
+Join and plot for export.
+
 ```{r}
+#| label: join-replicate-plot-jaccard-bray
+
 types_boxplot <- cowplot::plot_grid(compare_reps_jaccard_types, compare_reps_bray_types, labels = c("a", "b"), ncol = 2, rel_widths = c(1.6, 2.6) )
 
 types_boxplot
@@ -4378,3 +4426,7 @@ types_boxplot
 ggsave(filename = "Figures/types_boxplot.png", plot = types_boxplot,
        device = "png", dpi = 300, units = "mm", height = 170, width = 250)
 ```
+
+## Concluding remarks
+
+We have now tidied, decontaminated, and filtered our eDNA metabarcoding data and used a variety of visualizations to quality check our data. Further ecological analyses will be presented in seperate Markdown documents usig the data generated in this workflow.
