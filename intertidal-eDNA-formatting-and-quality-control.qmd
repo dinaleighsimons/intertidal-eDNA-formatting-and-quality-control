@@ -2222,6 +2222,10 @@ Let's first examine what groups we have.
 
 #| label: unique-functional-groups
 
+# save the taxa list before filtering for saving later
+full_nontarget_phylo <- phylo_eDNA_decontam_filtered
+
+# which groups
 unique(tax_table(phylo_eDNA_decontam_filtered)[, "adult"])
 ```
 
@@ -2334,6 +2338,48 @@ phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered,       
 phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered, taxa_sums(phylo_eDNA_decontam_filtered) > 0)
                                             
 phylo_eDNA_decontam_filtered
+```
+
+Now let's save each of the lists (target and non-target for each primer) for supplemntary information.
+
+```{r}
+
+#| label: save-SM-tables-taxa
+
+# explore
+full_nontarget_phylo
+phylo_eDNA_decontam_filtered
+
+# get only non-target
+taxa_to_remove <- taxa_names(phylo_eDNA_decontam_filtered)
+nontarget_only_phylo <- prune_taxa(!(taxa_names(full_nontarget_phylo) %in% taxa_to_remove), full_nontarget_phylo)
+
+# save only genus and species level for supp
+tax_table_data <- tax_table(phylo_eDNA_decontam_filtered)
+keep_taxa <- rownames(tax_table_data)[tax_table_data[, "rank"] %in% c("Species", "Genus")]
+phylo_target_genus_species <- prune_taxa(keep_taxa, phylo_eDNA_decontam_filtered)
+
+tax_table_data_nontarget <- tax_table(nontarget_only_phylo)
+keep_taxa_nontarget <- rownames(tax_table_data_nontarget)[tax_table_data_nontarget[, "rank"] %in% c("Species", "Genus")]
+phylo_nontarget_genus_species <- prune_taxa(keep_taxa_nontarget, nontarget_only_phylo)
+
+# save non-target list by primer
+nontarget_CO1 <- ps_filter(phylo_nontarget_genus_species, primer == "CO1")
+nontarget_CO1_list <- tax_table(nontarget_CO1)
+write.csv(nontarget_CO1_list, file = "Processed_data/nontarget_CO1_taxa_list.csv", row.names = FALSE)
+
+nontarget_18S <- ps_filter(phylo_nontarget_genus_species, primer == "18S")
+nontarget_18S_list <- tax_table(nontarget_18S)
+write.csv(nontarget_18S_list, file = "Processed_data/nontarget_18S_taxa_list.csv", row.names = FALSE)
+
+# save target list by primer
+target_CO1 <- ps_filter(phylo_target_genus_species, primer == "CO1")
+target_CO1_list <- tax_table(target_CO1)
+write.csv(target_CO1_list, file = "Processed_data/target_CO1_taxa_list.csv", row.names = FALSE)
+
+target_18S <- ps_filter(phylo_target_genus_species, primer == "18S")
+target_18S_list <- tax_table(target_18S)
+write.csv(target_18S_list, file = "Processed_data/target_18S_taxa_list.csv", row.names = FALSE)
 ```
 
 Let's check to see how many taxa we have for invertebrates and macroalgae.
