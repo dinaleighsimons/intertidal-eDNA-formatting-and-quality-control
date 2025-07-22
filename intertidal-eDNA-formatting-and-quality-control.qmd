@@ -310,7 +310,6 @@ SW_taxa_18S <- SW_taxa_18S[,!(names(SW_taxa_18S) %in% drop)]
 NE_taxa_18S <- NE_taxa_18S[,!(names(NE_taxa_18S) %in% drop)]
 CN_taxa_18S <- CN_taxa_18S[,!(names(CN_taxa_18S) %in% drop)]
 Controls_taxa_18S <- Controls_taxa_18S[,!(names(Controls_taxa_18S) %in% drop)]
-
 ```
 
 ### Convert to long format
@@ -487,8 +486,12 @@ unassigned_phrases <- c(
 
 # calculate percentage of unassigned
 total_asvs <- nrow(eDNA_long_data) # Count total ASVs before filtering
+total_asvs 
+
 unassigned_asvs <- eDNA_long_data[grepl(paste(unassigned_phrases, collapse = "|"), eDNA_long_data$taxonomy), ]
 removed_asvs <- nrow(unassigned_asvs) # Count ASVs that will be removed
+removed_asvs
+
 percentage_removed <- (removed_asvs / total_asvs) * 100 # Calculate percentage removed
 cat("Percentage of ASVs removed:", round(percentage_removed, 2), "%\n") #print
 
@@ -513,7 +516,6 @@ names_together <- data.frame(names, cleaned_names) %>%
   mutate(taxonomy_clean = gsub('cf ','', taxonomy_clean)) #remove cfs which function didn't remove
 
 eDNA_long_data_cleaned <- full_join(names_together, eDNA_long_data_cleaning)
-
 ```
 
 We should now have a variable added to our data set called taxonomy_clean. We will use this variable as the taxonomic name moving forward.
@@ -2108,10 +2110,10 @@ We need to tidy up the shore positions to high, low and open water only.
 
 #| label: tody-shore-height-names
 
-sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid "] <- "High"
+sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid "] <- "Low"
 sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Tidal"] <- "Open Water"
 sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Subtidal"] <- "Open Water"
-sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid"] <- "High"
+sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid"] <- "Low"
 
 table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
 ```
