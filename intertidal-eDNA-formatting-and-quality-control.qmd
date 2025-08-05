@@ -295,6 +295,191 @@ Controls_asv_CO1_merged <- merge(controls_PhD2_asv_fasta_CO1_df, controls_PhD2_a
 Controls_taxa_CO1 <- full_join(Controls_CO1_taxa, Controls_asv_CO1_merged, by = "ASV") #full_join keeps ASVs which didn't get assigned, left_join would remove unassigned
 ```
 
+### Calulate unassigned ASVs before merging
+
+```{r}
+#| label: define-unassigned
+
+# Define the unassigned phrases
+unassigned_phrases <- c(
+  "uncultured",
+  "Uncultured",
+  "unclassified",
+  "Unclassified",
+  "NCBI",
+  "pseudo",
+  "Pseudo",
+  "Not assigned",
+  "not assigned",
+  "SAR",
+  "sar",
+  "cellular",
+  "Cellular",
+  "environmental",
+  "Environmental",
+  "eukaryote",
+  "Eukaryote",
+  "eukaryota",
+  "Eukaryota",
+  "NA"
+)
+```
+
+```{r}
+#| label: cal-unassigned-asvs
+
+#SCH --------
+
+# SCH - 18S ---
+total_asvs_SCH_18S <- length(SCH_taxa_18S$ASV) # Count total ASVs
+unassigned_asvs_SCH_18S <- SCH_taxa_18S[
+  grepl(paste(unassigned_phrases, collapse = "|"), SCH_taxa_18S$taxonomy) |
+    is.na(SCH_taxa_18S$taxonomy),
+]
+
+removed_asvs_SCH_18S <- length(unassigned_asvs_SCH_18S$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_SCH_18S <- (removed_asvs_SCH_18S / total_asvs_SCH_18S) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for SCH-18S:", round(percentage_unassigned_SCH_18S, 2), "%\n")
+
+# SCH - CO1 ---
+total_asvs_SCH_CO1 <- length(SCH_taxa_CO1$ASV) # Count total ASVs
+unassigned_asvs_SCH_CO1 <- SCH_taxa_CO1[
+  grepl(paste(unassigned_phrases, collapse = "|"), SCH_taxa_CO1$taxonomy) |
+    is.na(SCH_taxa_CO1$taxonomy),
+]
+
+removed_asvs_SCH_CO1 <- length(unassigned_asvs_SCH_CO1$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_SCH_CO1 <- (removed_asvs_SCH_CO1 / total_asvs_SCH_CO1) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for SCH-CO1:", round(percentage_unassigned_SCH_CO1, 2), "%\n")
+
+#NW --------
+
+# NW - 18S ---
+total_asvs_NW_18S <- length(NW_taxa_18S$ASV) # Count total ASVs
+unassigned_asvs_NW_18S <- NW_taxa_18S[
+  grepl(paste(unassigned_phrases, collapse = "|"), NW_taxa_18S$taxonomy) |
+    is.na(NW_taxa_18S$taxonomy),
+]
+
+removed_asvs_NW_18S <- length(unassigned_asvs_NW_18S$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_NW_18S <- (removed_asvs_NW_18S / total_asvs_NW_18S) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for NW-18S:", round(percentage_unassigned_NW_18S, 2), "%\n")
+
+# NW - CO1 ---
+total_asvs_NW_CO1 <- length(NW_taxa_CO1$ASV) # Count total ASVs
+unassigned_asvs_NW_CO1 <- NW_taxa_CO1[
+  grepl(paste(unassigned_phrases, collapse = "|"), NW_taxa_CO1$taxonomy) |
+    is.na(NW_taxa_CO1$taxonomy),
+]
+
+removed_asvs_NW_CO1 <- length(unassigned_asvs_NW_CO1$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_NW_CO1 <- (removed_asvs_NW_CO1 / total_asvs_NW_CO1) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for NW-CO1:", round(percentage_unassigned_NW_CO1, 2), "%\n")
+
+# SW -----------
+
+# SW - 18S ---
+total_asvs_SW_18S <- length(SW_taxa_18S$ASV) # Count total ASVs
+unassigned_asvs_SW_18S <- SW_taxa_18S[
+  grepl(paste(unassigned_phrases, collapse = "|"), SW_taxa_18S$taxonomy) |
+    is.na(SW_taxa_18S$taxonomy),
+]
+
+removed_asvs_SW_18S <- length(unassigned_asvs_SW_18S$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_SW_18S <- (removed_asvs_SW_18S / total_asvs_SW_18S) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for SW-18S:", round(percentage_unassigned_SW_18S, 2), "%\n")
+
+# SW - CO1 ---
+total_asvs_SW_CO1 <- length(SW_taxa_CO1$ASV) # Count total ASVs
+unassigned_asvs_SW_CO1 <- SW_taxa_CO1[
+  grepl(paste(unassigned_phrases, collapse = "|"), SW_taxa_CO1$taxonomy) |
+    is.na(SW_taxa_CO1$taxonomy),
+]
+
+removed_asvs_SW_CO1 <- length(unassigned_asvs_SW_CO1$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_SW_CO1 <- (removed_asvs_SW_CO1 / total_asvs_SW_CO1) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for SW-CO1:", round(percentage_unassigned_SW_CO1, 2), "%\n")
+
+# NE -----------
+
+# NE - 18S ---
+total_asvs_NE_18S <- length(NE_taxa_18S$ASV) # Count total ASVs
+unassigned_asvs_NE_18S <- NE_taxa_18S[
+  grepl(paste(unassigned_phrases, collapse = "|"), NE_taxa_18S$taxonomy) |
+    is.na(NE_taxa_18S$taxonomy),
+]
+
+removed_asvs_NE_18S <- length(unassigned_asvs_NE_18S$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_NE_18S <- (removed_asvs_NE_18S / total_asvs_NE_18S) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for NE-18S:", round(percentage_unassigned_NE_18S, 2), "%\n")
+
+# NE - CO1 ---
+total_asvs_NE_CO1 <- length(NE_taxa_CO1$ASV) # Count total ASVs
+unassigned_asvs_NE_CO1 <- NE_taxa_CO1[
+  grepl(paste(unassigned_phrases, collapse = "|"), NE_taxa_CO1$taxonomy) |
+    is.na(NE_taxa_CO1$taxonomy),
+]
+
+removed_asvs_NE_CO1 <- length(unassigned_asvs_NE_CO1$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_NE_CO1 <- (removed_asvs_NE_CO1 / total_asvs_NE_CO1) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for NE-CO1:", round(percentage_unassigned_NE_CO1, 2), "%\n")
+
+# CN -----------
+
+# CN - 18S ---
+total_asvs_CN_18S <- length(CN_taxa_18S$ASV) # Count total ASVs
+unassigned_asvs_CN_18S <- CN_taxa_18S[
+  grepl(paste(unassigned_phrases, collapse = "|"), CN_taxa_18S$taxonomy) |
+    is.na(CN_taxa_18S$taxonomy),
+]
+
+removed_asvs_CN_18S <- length(unassigned_asvs_CN_18S$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_CN_18S <- (removed_asvs_CN_18S / total_asvs_CN_18S) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for CN-18S:", round(percentage_unassigned_CN_18S, 2), "%\n")
+
+# CN - CO1 ---
+total_asvs_CN_CO1 <- length(CN_taxa_CO1$ASV) # Count total ASVs
+unassigned_asvs_CN_CO1 <- CN_taxa_CO1[
+  grepl(paste(unassigned_phrases, collapse = "|"), CN_taxa_CO1$taxonomy) |
+    is.na(CN_taxa_CO1$taxonomy),
+]
+
+removed_asvs_CN_CO1 <- length(unassigned_asvs_CN_CO1$ASV) # Count ASVs that will be removed
+
+percentage_unassigned_CN_CO1 <- (removed_asvs_CN_CO1 / total_asvs_CN_CO1) * 100 # Calculate percentage removed
+cat("Percentage of ASVs unassigned for CN-CO1:", round(percentage_unassigned_CN_CO1, 2), "%\n")
+
+# overall co1
+total_unassigned_CO1 <-((percentage_unassigned_CN_CO1 +
+                        percentage_unassigned_NE_CO1 +
+                        percentage_unassigned_SW_CO1 +
+                        percentage_unassigned_NW_CO1 +
+                        percentage_unassigned_SCH_CO1) / 500)  * 100
+cat("Percentage of ASVs unassigned for CO1:", round(total_unassigned_CO1, 2), "%\n")
+
+# overall 18S
+total_unassigned_18S <-((percentage_unassigned_CN_18S +
+                        percentage_unassigned_NE_18S +
+                        percentage_unassigned_SW_18S +
+                        percentage_unassigned_NW_18S +
+                        percentage_unassigned_SCH_18S) / 500)  * 100
+cat("Percentage of ASVs unassigned for 18S:", round(total_unassigned_18S, 2), "%\n")
+
+# overall 
+total_unassigned_overall <-((total_unassigned_18S + 
+                               total_unassigned_CO1) / 200)  * 100
+cat("Percentage of ASVs unassigned for overall:", round(total_unassigned_overall, 2), "%\n")
+```
+
 ### Remove undetermined sequences in 18S data
 
 Sequences that were unable to be assigned to a specific sample in the 18S are stored under the variable 'S0'. We want to remove those sequences from our data.
@@ -360,7 +545,6 @@ flip_controls_18S$region <- "Varied"
 
 flip_controls_CO1 <- gather(Controls_taxa_CO1, sample, reads, X173.SCH02.03:X195.minusVEpcr) #this is not number order, this is first and last column
 flip_controls_CO1$region <- "Varied"
-
 ```
 
 Let's take a look at the long format for Scotland CO1. We now have a long format data set with ASVs, taxonomy, sequences, sample names, number of reads and region variables.
@@ -427,6 +611,8 @@ Finally, we join the two primer data sets into a single data set.
 
 eDNA_ASVs_long <- rbind(full_18S, full_CO1)
 any(duplicated(eDNA_ASVs_long)) #check for duplicates - should be false (this may take a minute or so)
+
+head(eDNA_ASVs_long)
 ```
 
 Let's now add in our metadata and do some final tweaks to sample names.
@@ -461,35 +647,12 @@ We first remove any occurrences where the taxonomic matches certain ambiguous ph
 ```{r}
 #| label: remove-ambiguous-names
 
-# Define the unassigned phrases
-unassigned_phrases <- c(
-  "uncultured",
-  "Uncultured",
-  "unclassified",
-  "Unclassified",
-  "NCBI",
-  "pseudo",
-  "Pseudo",
-  "Not assigned",
-  "not assigned",
-  "SAR",
-  "sar",
-  "cellular",
-  "Cellular",
-  "environmental",
-  "Environmental",
-  "eukaryote",
-  "Eukaryote",
-  "eukaryota",
-  "Eukaryota"
-)
-
 # calculate percentage of unassigned
-total_asvs <- nrow(eDNA_long_data) # Count total ASVs before filtering
-total_asvs 
+total_asvs <- length(unique(eDNA_long_data$ASV)) # Count total ASVs before filtering
+total_asvs
 
 unassigned_asvs <- eDNA_long_data[grepl(paste(unassigned_phrases, collapse = "|"), eDNA_long_data$taxonomy), ]
-removed_asvs <- nrow(unassigned_asvs) # Count ASVs that will be removed
+removed_asvs <- length(unique(unassigned_asvs$ASV)) # Count ASVs that will be removed
 removed_asvs
 
 percentage_removed <- (removed_asvs / total_asvs) * 100 # Calculate percentage removed
@@ -805,7 +968,7 @@ Let's check how many matches we made.
 ```{r}
 #| echo: false
 #| label: match-worms-alphia
-#| 
+
 print(paste("You matched", nrow(eDNA_taxa_unique_df) - sum(is.na(aphiaID_worms_output$aphiaID)),"/", nrow(eDNA_taxa_unique_df), "taxa with AphiaIDs. Therefore,", sum(is.na(aphiaID_worms_output$aphiaID)), "entries could not be matched and do not have AphiaIDs."))
 ```
 
@@ -923,7 +1086,6 @@ str(eDNA_long_data_final)
 We get a wide range of different groups from WoRMS. For analysis later on, we need to tidy these names.
 
 ```{r}
-
 #| label: tidy-functional-groups
 
 # Tidy functional groups
@@ -983,7 +1145,6 @@ eDNA_long_data_final$adult_simple <- dplyr::recode(
 Before we convert our data into a `phyloseq` object and filter our target taxa, let's explore out functional groups over the different shore heights.
 
 ```{r}
-
 #| label: explore-functional-groups
 
 # add pa variable and remove absences
@@ -1190,7 +1351,6 @@ We can also repeat the last few steps but group by `scientificname` to get a tax
 We can see that we have 1780 ASVs and 655 samples.
 
 ```{r}
-
 #| label: format-otu-table-long-taxa
 
 species_reads_long_taxa <- eDNA_long_data_removefailed %>%
@@ -1713,7 +1873,6 @@ And finally, the function for PCR level decontamination. We have to do this by m
 The 18S function is called `remove_PCR_control_taxa_18S_abund`.
 
 ```{r}
-
 #| label: remove-PCR18S-contam-function
 
 remove_PCR_control_taxa_18S_abund <- function(phylo_object) {
@@ -2049,7 +2208,6 @@ remove_PCR_control_taxa_CO1_abund <- function(phylo_object) {
 Time to run the decontamination functions one after the other, using the output of the first as the input for the last.
 
 ```{r}
-
 #| label: call-decontam-funcions
 
 minReads = 100 #to identify a contaminant
@@ -2086,7 +2244,6 @@ Let's compared our decontaminated data with the original.
 We can see that control samples have now been removed from the data and 51 taxa have also been removed.
 
 ```{r}
-
 #| label: view-change-decontamination
 
 phylo_eDNA
@@ -2096,7 +2253,6 @@ phylo_eDNA_decontam
 We can also check to see how many samples are categorized under different sample types.
 
 ```{r}
-
 #| label: view-change-decontamination-samples
 
 table(meta(phylo_eDNA_decontam)$sampleType, useNA = "always") #sample type
@@ -2107,7 +2263,6 @@ table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
 We need to tidy up the shore positions to high, low and open water only.
 
 ```{r}
-
 #| label: tody-shore-height-names
 
 sample_data(phylo_eDNA_decontam)$shorePosition[sample_data(phylo_eDNA_decontam)$shorePosition == "Mid "] <- "Low"
@@ -2121,7 +2276,6 @@ table(meta(phylo_eDNA_decontam)$shorePosition, useNA = "always") #shore height
 We also don't require our positive controls now.
 
 ```{r}
-
 #| label: remove-positive-controls
 
 phylo_eDNA_decontam <- subset_samples(phylo_eDNA_decontam, !(controlCheck == "positive")) 
@@ -2138,7 +2292,6 @@ It's good practice to remove any samples with the low read depth to prevent samp
 We first need to calculate read depth per sample.
 
 ```{r}
-
 #| label: calculate-read-depth-per-sample
 
 # Number of reads per sample (before filtering)
@@ -2171,7 +2324,6 @@ abundance_metadf[,"ASVs"] <- asv_sum
 Check the distribution of sample reads.
 
 ```{r}
-
 #| label: read-depth-dist-samples
 
 pcr_seq_depth_overall <- ggplot(abundance_metadf, aes(depth)) +
@@ -2188,7 +2340,6 @@ pcr_seq_depth_overall
 Now let's flag samples with an acceptable (TRUE) or unacceptable (FALSE) sequencing depth. We should aim to keep at least 90% of samples.
 
 ```{r}
-
 #| label: flag-low-read-depth
 
 abundance_metadf$depth_ok <- ifelse(abundance_metadf$depth < 3000, F, T)
@@ -2200,7 +2351,6 @@ table(abundance_metadf$depth_ok[abundance_metadf$negCheckLogical=="FALSE"]) /
 A minimum threshold of 3000 reads looks like it could work well. Let's now filter our data set to remove any samples below 3000.
 
 ```{r}
-
 #| label: filter-reads
 
 sample_depths_object <- sample_sums(phylo_eDNA_decontam) # Calculate sample sequencing depths
@@ -2221,7 +2371,6 @@ For this project, we were only interested in marine invertebrates and algae. So,
 Let's first examine what groups we have.
 
 ```{r}
-
 #| label: unique-functional-groups
 
 # save the taxa list before filtering for saving later
@@ -2234,7 +2383,6 @@ unique(tax_table(phylo_eDNA_decontam_filtered)[, "adult"])
 Define which groups not of interest.
 
 ```{r}
-
 #| label: unwanted-taxa-define
 
 fish_and_small_stuff <- c("fish", 
@@ -2254,7 +2402,6 @@ other_unwanted_order <- c("Squamata")
 Now let's remove them from the relevant groups.
 
 ```{r}
-
 #| label: unwanted-taxa-remove
 
 phylo_eDNA_decontam_filtered <- subset_taxa(
@@ -2275,7 +2422,6 @@ phylo_eDNA_decontam_filtered
 Let's define which phyla we are interested in.
 
 ```{r}
-
 #| label: target-taxa-define
 
 target_phyla <-   c(
@@ -2331,7 +2477,6 @@ target_phyla <-   c(
 Now let's remove everything other than target taxa from the data.
 
 ```{r}
-
 #| label: target-taxa-filter
 
 phylo_eDNA_decontam_filtered <- subset_taxa(phylo_eDNA_decontam_filtered,                                              phylum %in% target_phyla)
@@ -2345,7 +2490,6 @@ phylo_eDNA_decontam_filtered
 Now let's save each of the lists (target and non-target for each primer) for supplemntary information.
 
 ```{r}
-
 #| label: save-SM-tables-taxa
 
 # explore
@@ -2389,7 +2533,6 @@ Let's check to see how many taxa we have for invertebrates and macroalgae.
 First, let's define our groups.
 
 ```{r}
-
 #| label: target-taxa-define-invert-and-algae
 
 invert_phyla <- c(
@@ -2449,7 +2592,6 @@ algae_phyla <- c(
 Let's look at invertebrates first.
 
 ```{r}
-
 #| label: target-taxa-filter-invert
 
 phylo_eDNA_decontam_filtered_invert <- subset_taxa(phylo_eDNA_decontam_filtered, phylum %in% invert_phyla)  
@@ -2462,7 +2604,6 @@ print(paste("Invertebrate species account for", (737 / 1026) * 100, "% of detect
 Now let's look at algae.
 
 ```{r}
-
 #| label: target-taxa-filter-algae
 
 phylo_eDNA_decontam_filtered_algae <- subset_taxa(phylo_eDNA_decontam_filtered, phylum %in% algae_phyla)  
@@ -2491,7 +2632,6 @@ Sometimes, we may want to rarefy our data.
 We won't be making anymore changes to our main data, so let's export the `phyloseq` object to use elsewhere.
 
 ```{r}
-
 #| label: save-phylo
 
 phylo_rocky_eDNA <- phylo_eDNA_decontam_filtered 
@@ -2502,7 +2642,6 @@ save(phylo_rocky_eDNA, file = "Processed_Data/phylo_rocky_eDNA.RData") #save obj
 And the rarefied data.
 
 ```{r}
-
 #| label: save-rarefied-phylo
 
 #save(pseq_rarefy, file = "Processed_Data/phylo_rocky_eDNA_rarefied.RData") #save object
@@ -2511,7 +2650,6 @@ And the rarefied data.
 Let's also convert it to a long data format in case we need it for further analyses.
 
 ```{r}
-
 #| label: save-long-format
 
 #Extra elements and format
@@ -2557,7 +2695,6 @@ phylo_eDNA_decontam_filtered #final data
 First, let's stop scientific notation being presented in plots.
 
 ```{r}
-
 #| label: number-setting
 
 options(scipen=5)
@@ -2566,7 +2703,6 @@ options(scipen=5)
 Let's set-up some functions we'll use later on to extract pieces of information from our data. Note: these functions only work currently for the format of IDs in this data set. They made need altering for other data sets.
 
 ```{r}
-
 #| label: qc-functions
 
 # Extract fieldID when adding TRUE or FALSE for replicate status
@@ -2605,7 +2741,6 @@ extract_middle_CO1 <- function(x) {
 We need to set some variables for plots later.
 
 ```{r}
-
 #| label: qc-plot-variables
 
 site_order <- c("Scourie", 
@@ -2671,7 +2806,6 @@ We calculated the pre-filtered data above, so now let's calculate the pre decont
 Pre-decontamination first.
 
 ```{r}
-
 #| label: read-depth-summary-before-decontam
 
 # Number of reads per sample (after decontamination and filtering)
@@ -2704,7 +2838,6 @@ abundance_metadf_predecontam[,"ASVs"] <- asv_sum_predecontam
 Post-filtered.
 
 ```{r}
-
 #| label: read-depth-summary-after-filter
 
 # Number of reads per sample (after decontamination and filtering)
@@ -2737,7 +2870,6 @@ abundance_metadf_filter[,"ASVs"] <- asv_sum_filter
 Join depth information into one data set.
 
 ```{r}
-
 #| label: read-depth-summary-all
 
 # Reads before and after decontamination together
@@ -2762,7 +2894,6 @@ Let's create some figures to visualize read depths before and after filtering. W
 Pre-decontamination.
 
 ```{r}
-
 #| message: false
 #| label: reads-summarize-before-decontam
 
@@ -2782,7 +2913,6 @@ print(mu_primer)
 ```
 
 ```{r}
-
 #| label: reads-histo-before-decontam
 
 reads_histo_predecontam <- ggplot(sample_depths_predecontam_nozero, aes(x=reads_predecontam, fill = primer, colour = primer)) + 
@@ -2822,7 +2952,6 @@ print(mu_primer)
 ```
 
 ```{r}
-
 #| label: reads-histo-before-filter
 
 reads_histo <- ggplot(sample_depths_decontam_nozero, aes(x=reads_prefilter, fill = primer, colour = primer)) + 
@@ -2862,7 +2991,6 @@ print(mu_primer_filter)
 ```
 
 ```{r}
-
 #| label: reads-histo-after-filter
 
 reads_histo_filter <- ggplot(sample_depths_decontam_filter_nozero, aes(x=reads_postfilter, fill = primer, colour = primer)) + 
@@ -2883,7 +3011,6 @@ reads_histo_filter
 Join them together to export.
 
 ```{r}
-
 #| label: join-reads-histo
 
 reads_histo_together <- cowplot::plot_grid(reads_histo_predecontam, reads_histo, reads_histo_filter, labels = c("a", "b", "c"), ncol = 1)
@@ -2901,7 +3028,6 @@ Let's look at reads over sites in boxplots.
 Pre-decontamination.
 
 ```{r}
-
 #| label: reads-boxplot-before-decontam-site
 
 reads_boxplot_sites_predecontam <- ggplot2::ggplot(abundance_metadf_predecontam, aes(y=depth, x=verbatimLocality, colour = country)) +
@@ -2924,7 +3050,6 @@ reads_boxplot_sites_predecontam
 Pre-filtering.
 
 ```{r}
-
 #| label: reads-boxplot-before-filter-site
 
 reads_boxplot_sites <- ggplot2::ggplot(abundance_metadf, aes(y=depth, x=verbatimLocality, colour = country)) +
@@ -2947,7 +3072,6 @@ reads_boxplot_sites
 Post-filtering.
 
 ```{r}
-
 #| label: reads-boxplot-after-filter-site
 
 reads_boxplot_sites_filter <- ggplot2::ggplot(abundance_metadf_filter, aes(y=depth, x=verbatimLocality, colour = country)) +
@@ -2970,7 +3094,6 @@ reads_boxplot_sites_filter
 Join them together to export.
 
 ```{r}
-
 #| label: join-boxplot-reads-site
 
 reads_boxplot_sites_together <- cowplot::plot_grid(reads_boxplot_sites_predecontam, reads_boxplot_sites, reads_boxplot_sites_filter, labels = c("a", "b", "c"), ncol = 1) 
@@ -2986,7 +3109,6 @@ ggsave(reads_boxplot_sites_together, filename = "Figures/reads_boxplot_sites_tog
 Let's tidy the names of our sample types.
 
 ```{r}
-
 #| label: tidy-sample-type-names
 
 abundance_metadf_predecontam <- abundance_metadf_predecontam %>%
@@ -3036,7 +3158,6 @@ abundance_metadf_filter <- abundance_metadf_filter %>%
 Before decontamination.
 
 ```{r}
-
 #| label: reads-boxplot-sample-types-predecontam 
 
 reads_boxplot_sample_types_predecontam <- ggplot(abundance_metadf_predecontam, aes(x=tidy_type_name, y=depth, color=tidy_type_name)) + 
@@ -3064,7 +3185,6 @@ reads_boxplot_sample_types_predecontam
 Pre-filtering. We shouldn't see negative or positive controls here anymore.
 
 ```{r}
-
 #| label: reads-boxplot-sample-types-prefilter
 
 reads_boxplot_sample_types <- ggplot(abundance_metadf, aes(x=tidy_type_name, y=depth, color=tidy_type_name)) + 
@@ -3094,7 +3214,6 @@ reads_boxplot_sample_types
 Pre-decontamination.
 
 ```{r}
-
 #| label: asv-boxplot-sample-types-predecontam 
 
 ASVs_boxplot_sample_types_predecontam <- ggplot(abundance_metadf_predecontam, aes(x=tidy_type_name, y=ASVs, color=tidy_type_name)) +
@@ -3119,7 +3238,6 @@ ASVs_boxplot_sample_types_predecontam
 Pre-filtering
 
 ```{r}
-
 #| label: asv-boxplot-sample-types-prefilter 
 
 ASVs_boxplot_sample_types_decontam <- ggplot(abundance_metadf, aes(x=tidy_type_name, y=ASVs, color=tidy_type_name)) +
@@ -3144,7 +3262,6 @@ ASVs_boxplot_sample_types_decontam
 Let's make a plot to show the raw reads and ASVs.
 
 ```{r}
-
 #| label: asv-reads-boxplot 
 
 ASVs_reads_sampletype <- cowplot::plot_grid(ASVs_boxplot_sample_types_predecontam, reads_boxplot_sample_types_predecontam, labels = c("a", "b", ncol = 2), rel_widths = c(1,1.1))
@@ -3158,7 +3275,6 @@ ggsave(filename = "Figures/ASVs_reads_sampletype.png", plot = ASVs_reads_samplet
 We can also look at number of taxa in a scatter.
 
 ```{r}
-
 #| message: false
 #| label: asvs-scatter-sample-types-predecontam 
 
@@ -3186,7 +3302,6 @@ We have replication in different forms in our data. We have field replicates and
 Let's define replicates first.
 
 ```{r}
-
 #| label: filter-explore-all-replicates
 
 # Subset replicates and their counter parts
@@ -3221,7 +3336,6 @@ plot_bar(phylo_replicates, "fullID", fill = "phylum")
 Let's order our samples for plotting later.
 
 ```{r}
-
 #| label: define-replicates-between-runs
 
 # Sort lists of replicates
@@ -3298,7 +3412,6 @@ sample_order_run2v3 <- c(
 Turning data into compositional form for plotting.
 
 ```{r}
-
 #| label: rel-abundance-replicates
 
 #Transform abundance table to a relative abundance (compositional) table
@@ -3312,7 +3425,6 @@ phylum_pseq <- microbiome::aggregate_rare(pseq_relabund, "phylum",
 Average read depths over the difference runs.
 
 ```{r}
-
 #| label: read_depth-run-replicates
 #| warning: false
 
@@ -3384,7 +3496,6 @@ ggplot(metadata_reps, aes(x = fieldID, y = ReadDepth, fill = projectID)) +
 Comparison taxa plot for run 1 vs run 2.
 
 ```{r}
-
 #| warning: false
 #| label: composition-run-replicates-1vs2
 
@@ -3401,7 +3512,6 @@ ggsave(filename = "Figures/run_replicates_taxa_plot_1v2_curated_98.png", plot = 
 Dissimilarity for run 1 vs run 2.
 
 ```{r}
-
 #| warning: false
 #| label: dissim-run-replicates-1vs2
 
@@ -3469,7 +3579,6 @@ ggsave(filename = "Figures/dis_18S_matrix_run1vs_curated_98.png", plot = dis_18S
 Same again for run 1 vs run 3.
 
 ```{r}
-
 #| label: composition-run-replicates-1vs3
 
 # Comparison taxa plot
@@ -3484,7 +3593,6 @@ ggsave(filename = "Figures/run_replicates_taxa_plot_1v3_curated_98.png", plot = 
 ```
 
 ```{r}
-
 #| label: dissim-run-replicates-1vs3
 
 # Dissimilarity 
@@ -3524,7 +3632,6 @@ ggsave(filename = "Figures/dis_CO1_matrix_run1v3_curated_98.png", plot = dis_CO1
 For run 2 and run 3.
 
 ```{r}
-
 #| label: composition-run-replicates-2vs3
 
 # Comparison taxa plot
@@ -3539,7 +3646,6 @@ ggsave(filename = "Figures/run_replicates_taxa_plot_2v3_curated_98.png", plot = 
 ```
 
 ```{r}
-
 #| label: dissim-run-replicates-2vs3
 
 #Dissimilarity 
@@ -3579,7 +3685,6 @@ ggsave(filename = "Figures/dis_CO1_matrix_run2v3_curated_98.png", plot = dis_CO1
 We first set the order our our samples within each region.
 
 ```{r}
-
 #| label: define-replicates-regions
 
 SCH_reps <- c(
@@ -3671,7 +3776,6 @@ NE_reps <- c(
 South Wales
 
 ```{r}
-
 #| label: south-wales-replicate-plots
 
 #### Comparison taxa plot
@@ -3745,7 +3849,6 @@ ggsave(filename = "Figures/PCR_replicates/dis_18S_matrix_SW_curated_98.png", plo
 Scotland
 
 ```{r}
-
 #| label: sch-replicate-plots
 
 #### Comparison taxa plot 
@@ -3819,7 +3922,6 @@ ggsave(filename = "Figures/PCR_replicates/dis_18S_matrix_SCH_curated_98.png", pl
 Cornwall
 
 ```{r}
-
 #| label: CN-replicate-plots
 
 #### Comparison taxa plot 
@@ -3893,7 +3995,6 @@ ggsave(filename = "Figures/PCR_replicates/dis_18S_matrix_CN_curated_98.png", plo
 Northeast England
 
 ```{r}
-
 #| label: northeast-replicate-plots
 
 #### Comparison taxa plot 
@@ -3967,7 +4068,6 @@ ggsave(filename = "Figures/PCR_replicates/dis_18S_matrix_NE_curated_98.png", plo
 North Wales
 
 ```{r}
-
 #| label: north-wales-replicate-plots
 
 #### Comparison taxa plot 
@@ -4041,7 +4141,6 @@ ggsave(filename = "Figures/PCR_replicates/dis_18S_matrix_NW_curated_98.png", plo
 Join comp plots together for export.
 
 ```{r}
-
 #| label: join-run-reps-plot
 
 all_region_reps <- cowplot::plot_grid(
@@ -4069,7 +4168,6 @@ ggsave(filename = "Figures/all_region_reps.png", plot = all_region_reps,
 We need to get a list of sites for the following loop.
 
 ```{r}
-
 #| label: side-ids-get
 
 site_ids <- unique(sample_data(phylo_eDNA_decontam_filtered)$localityID) %>% na.omit() # Add more site IDs as needed   
@@ -4078,7 +4176,6 @@ site_ids <- unique(sample_data(phylo_eDNA_decontam_filtered)$localityID) %>% na.
 Similar to above, we need to calculate the relative abundances, but this time for the whole data set.
 
 ```{r}
-
 #| label: calculate-relative-abundance
 
 #Transform abundance table to a relative abundance (compositional) table
@@ -4091,7 +4188,6 @@ phylum_pseq <- microbiome::aggregate_taxa(pseq_relabund, "phylum", verbose = FAL
 Generate plots for COI samples.
 
 ```{r}
-
 #| label: CO1-field-rep-comp-plots
 
 #CO1 plots
@@ -4136,7 +4232,6 @@ for (site_id in site_ids) {
 And for 18S samples.
 
 ```{r}
-
 #| label: 18S-field-rep-comp-plots
 
 #18S plots
@@ -4174,7 +4269,6 @@ for (site_id in site_ids) {
 Now dissimilarity for both primers.
 
 ```{r}
-
 #| label: dis-field-rep-plots
 
 generate_dis_plot <- function(site_id) {
@@ -4261,7 +4355,6 @@ for (site_id in site_ids) {
 Let's compare average dissimilarity across different replicate comparisons.
 
 ```{r}
-
 #| label: subset-replicates
 
 phylo_replicates_pairs = subset_samples(phylo_eDNA_decontam_filtered, pairedRepLogical == TRUE) 
@@ -4269,7 +4362,6 @@ phylo_replicates_pairs
 ```
 
 ```{r}
-
 #| label: jaccard-replicate-calculate
 
 # Identify the logical variable indicating replicates
@@ -4346,7 +4438,6 @@ averages
 ```
 
 ```{r}
-
 #| label: jaccard-replicate-plot
 
 compare_reps_jaccard_types <- ggplot(longData, aes(x = replicate, y = value, fill = overallType)) +
@@ -4368,7 +4459,6 @@ compare_reps_jaccard_types <- ggplot(longData, aes(x = replicate, y = value, fil
 ```
 
 ```{r}
-
 #| label: bray-replicate-calculate
 
 # Identify the logical variable indicating replicates
@@ -4445,7 +4535,6 @@ averages
 ```
 
 ```{r}
-
 #| label: bray-replicate-plot
 
 compare_reps_bray_types <- ggplot(longData, aes(x = replicate, y = value, fill = overallType)) +
